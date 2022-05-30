@@ -8,7 +8,50 @@ import numpy as np
 import openstudio
 
 from geomeffibem.plane import Plane
-from geomeffibem.vertex import Vertex
+from geomeffibem.vertex import Vertex, isAlmostEqual3dPt, isPointOnLineBetweenPoints
+
+
+class Surface3dEge:
+    def __init__(self, start: Vertex, end: Vertex, firstSurface: Surface):
+        self.start = start
+        self.end = end
+        self.allSurfaces = [firstSurface]
+
+    def containsPoints(self, testVertex: Vertex) -> bool:
+        """
+        Checks whether a Point: is not almost equal to the start and end points, and that
+        isPointOnLineBetweenPoints(start, end, testVertex) is true
+        """
+        return (
+            not isAlmostEqual3dPt(self.start, testVertex)
+            and not isAlmostEqual3dPt(self.end, testVertex)
+            and isPointOnLineBetweenPoints(self.start, self.end, testVertex)
+        )
+
+    def count(self) -> int:
+        return len(self.allSurfaces)
+
+    def __eq__(self, other):
+        if not isinstance(other, Surface3dEge):
+            raise NotImplementedError("Not implemented for any other types than Surface3dEge itself")
+
+        return (isAlmostEqual3dPt(self.start, other.start) and isAlmostEqual3dPt(self.end, other.end)) or (
+            isAlmostEqual3dPt(self.start, other.end) and isAlmostEqual3dPt(self.end, other.start)
+        )
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __repr__(self):
+        return f"start={self.start}, end={self.end}, count={self.count()}, firstSurface={self.allSurfaces[0].name}"
+
+    def plot_on_first_surface(self, ax=None):
+        surface = self.allSurfaces[0]
+
+        if ax is None:
+            fig, ax = plt.subplots(figsize=(16, 9))
+        surface.plot(ax=ax)
+        plot_vertices([self.start, self.end], plane=surface.get_plot_axis(), c='r', ax=ax, annotate=False)
 
 
 class Surface:
@@ -124,6 +167,16 @@ class Surface:
         Get a numpy array representing the vertices
         """
         return np.array([v.to_numpy() for v in self.vertices])
+
+    def to_Surface3dEdges(self) -> List[Surface3dEge]:
+        edges = []
+        for i, curVertex in enumerate(self.vertices):
+            if i == len(self.vertices) - 1:
+                nextVertex = self.vertices[0]
+            else:
+                nextVertex = self.vertices[i + 1]
+            edges.append(Surface3dEge(start=curVertex, end=nextVertex, firstSurface=self))
+        return edges
 
     def split_into_n_segments(self, n_segments, axis=None, plot=False) -> List[Surface]:
         """
