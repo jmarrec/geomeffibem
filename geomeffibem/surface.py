@@ -151,7 +151,8 @@ class Surface:
         if abs(abs(plane.c) - 1) < tol:
             return 'xy'
 
-        raise ValueError("Surface is not Planar!")
+        # TODO
+        raise NotImplementedError("Surface is not on a standard plane!")
 
     def os_area(self) -> Vertex:
         """Returns area of the surface via openstudio."""

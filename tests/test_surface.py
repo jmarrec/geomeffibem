@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Tests for `geomeffibem` Surface class."""
 
+import matplotlib.pyplot as plt
 import numpy as np
 import openstudio
 import pytest
@@ -39,6 +40,10 @@ def test_surface_rectangle():
     )
 
     assert surface.get_plot_axis() == 'xz'
+
+    surface_rot = surface.rotate(-15)
+    with pytest.raises(NotImplementedError):
+        surface_rot.get_plot_axis()
 
 
 def test_surface_roundtrip_openstudio():
@@ -97,6 +102,9 @@ def test_Surface3dEdge():
 
     edge.plot_on_first_surface()
 
+    fig, ax = plt.subplots()
+    edge.plot_on_first_surface(ax=ax)
+
 
 def test_Surface_get_plot_axis():
     """Test Surface.get_plot_axis."""
@@ -121,6 +129,11 @@ def test_Surface_centroid():
     assert surface.os_centroid() == Vertex(+5.0000, +5.0000, +0.0000)
     assert surface.rough_centroid() == Vertex(+5.0000, +5.0000, +0.0000)
 
+    # This isn't a surface, just four equal points...
+    surface = Surface.Rectangle(min_x=0.0, max_x=0.0, min_y=0.0, max_y=0.0, min_z=0.0, max_z=0.0)
+    with pytest.raises(ValueError):
+        surface.os_centroid()
+
 
 def test_Surface_split():
     """Test splitting a surface."""
@@ -142,13 +155,14 @@ def test_Surface_split():
     with pytest.raises(ValueError):
         surface.split_into_n_segments(n_segments=2, axis='z', plot=False)
 
+    surface.name = None
     s1, s2 = surface.split_into_n_segments(n_segments=2, axis='y', plot=False)
-    assert s1.name == "Surface-1"
+    assert s1.name is None
     assert np.array_equal(
         s1.to_numpy(), np.array([[0.0, 0.0, 0.0], [0.0, 5.0, 0.0], [10.0, 5.0, 0.0], [10.0, 0.0, 0.0]])
     )
 
-    assert s2.name == "Surface-2"
+    assert s2.name is None
     assert np.array_equal(
         s2.to_numpy(), np.array([[0.0, 5.0, 0.0], [0.0, 10.0, 0.0], [10.0, 10.0, 0.0], [10.0, 5.0, 0.0]])
     )
@@ -218,6 +232,7 @@ def test_get_surface_from_surface_like():
     surface.name = "Floor"
     assert isinstance(get_surface_from_surface_like(surface), Surface)
     assert isinstance(get_surface_from_surface_like(surface.to_Point3dVector()), Surface)
+    assert isinstance(get_surface_from_surface_like(surface.to_numpy()), Surface)
 
     m = openstudio.model.Model()
     os_sf = surface.to_OSSurface(m)
