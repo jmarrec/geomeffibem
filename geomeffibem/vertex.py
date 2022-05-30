@@ -1,24 +1,9 @@
+from __future__ import annotations
+
 from typing import Tuple
 
 import numpy as np
 import openstudio
-
-
-def isAlmostEqual3dPt(v1, v2, tol=0.0127):
-    """
-    Checks if both vertices almost equal within tolerance
-    """
-    # 0.0127 m = 1.27 cm = 1/2 inch
-    return not (abs((v1.to_numpy() - v2.to_numpy())) >= tol).any()
-
-
-def distance(lhs, rhs):
-    """
-    Distance between two vertices
-    """
-    squared_dist = np.sum((lhs.to_numpy() - rhs.to_numpy()) ** 2, axis=0)
-    dist = np.sqrt(squared_dist)
-    return dist
 
 
 class Vertex:
@@ -64,6 +49,8 @@ class Vertex:
         return openstudio.Point3d(self.x, self.y, self.z)
 
     def __eq__(self, other):
+        if not isinstance(other, Vertex):
+            raise NotImplementedError("Not implemented for any other types than Vertex itself")
         return isAlmostEqual3dPt(self, other)
 
     def __ne__(self, other):
@@ -75,3 +62,40 @@ class Vertex:
 
     # def __str__(self):
     #     return f"Vertex {self.__repr__()}"
+
+
+def isAlmostEqual3dPt(v1: Vertex, v2: Vertex, tol=0.0127) -> bool:
+    """
+    Checks if both vertices almost equal within tolerance
+    """
+    # 0.0127 m = 1.27 cm = 1/2 inch
+    return not (abs((v1.to_numpy() - v2.to_numpy())) >= tol).any()
+
+
+def distance(lhs: Vertex, rhs: Vertex) -> float:
+    """
+    Distance between two vertices
+    """
+    squared_dist = np.sum((lhs.to_numpy() - rhs.to_numpy()) ** 2, axis=0)
+    dist = np.sqrt(squared_dist)
+    return dist
+
+
+def distanceFromPointToLine(start: Vertex, end: Vertex, test: Vertex) -> float:
+    """
+    Distance between a point and a line
+    """
+    s = start.to_numpy()
+    e = end.to_numpy()
+    p = test.to_numpy()
+    return np.linalg.norm(np.cross(e - s, p - s) / np.linalg.norm(e - s))
+
+
+def isPointOnLineBetweenPoints(start: Vertex, end: Vertex, test: Vertex, tol: float = 0.0127) -> bool:
+    """
+    If the distance(start, test) + distance(test, end) == distance(start, end) then it's on a line
+    But we first check that the distance from the point to the line is also inferior to this tolerance
+    """
+    if distanceFromPointToLine(start=start, end=end, test=test) < tol:
+        return abs(distance(start, end) - (distance(start, test) + distance(test, end))) < tol
+    return False
