@@ -33,6 +33,8 @@ class Plane:
     def project(self, point: Vertex) -> Vertex:
         """Project a point onto a Plane."""
         # http://www.9math.com/book/projection-point-plane
+        if not isinstance(point, Vertex):
+            raise ValueError("Expected a Vertex object")
         u = point.x
         v = point.y
         w = point.z

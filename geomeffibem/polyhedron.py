@@ -19,7 +19,6 @@ class Polyhedron:
 
     def __init__(self, surfaces: List[Surface]):
         """Constructor from a list of Surface objects."""
-        assert isinstance(surfaces, list)
         if not isinstance(surfaces, np.ndarray) and not isinstance(surfaces, list):
             raise ValueError("Expected a list or numpy array of Surfaces")
 
@@ -115,7 +114,7 @@ class Polyhedron:
         if not edgeNot2again:
             return True, []
 
-        return False, list(set(edgeNot2orig).intersection(set(edgeNot2again)))
+        return False, edgesInBoth(edgeNot2orig, edgeNot2again)
 
     def to_os_cpp_code(self):
         """For my own convenience when writting OpenStudio tests."""
@@ -183,3 +182,14 @@ class Polyhedron:
 
             for j, v in enumerate(sf.vertices):
                 print(f"    state->dataSurface->Surface({i+1}).Vertex(1) = Vector({v.x}, {v.y}, {v.z});")
+
+
+def edgesInBoth(a: List[Surface3dEge], b: List[Surface3dEge]) -> List[Surface3dEge]:
+    """Helper function."""
+    in_both = []
+    for edge_a in a:
+        for edge_b in b:
+            if edge_a == edge_b:
+                in_both.append(edge_a)
+                break
+    return in_both

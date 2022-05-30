@@ -77,6 +77,8 @@ class Surface:
         """Factory method to construct from a numpy array of 3-coordinates arrays."""
         if isinstance(arr, list):
             arr = np.array(arr)
+        if arr.shape[0] < 3:
+            raise ValueError("Need at least 3 vertices to construct a Surface")
         if arr.shape[1] != 3:
             raise ValueError(f"Expected a numpy array with a dimension (N, 3), got {arr.shape}")
         return Surface([Vertex.from_numpy(x) for x in arr])
@@ -156,21 +158,11 @@ class Surface:
         return openstudio.getArea(self.to_Point3dVector()).get()
 
     def rough_centroid(self) -> Vertex:
-        """Returns the centroid calculated in a rough way: the mean of the coordinates.
-
-        Args:
-        ------
-            Plane (str): if not None, limits the coordinates to this plane
-        """
+        """Returns the centroid calculated in a rough way: the mean of the coordinates."""
         return Vertex.from_numpy(np.array([x.to_numpy() for x in self.vertices]).mean(axis=0))
 
     def os_centroid(self) -> Vertex:
-        """Returns the centroid via openstudio.
-
-        Args:
-        ------
-            Plane (str): if not None, limits the coordinates to this plane
-        """
+        """Returns the centroid via openstudio."""
         centroid_ = openstudio.getCentroid(self.to_Point3dVector())
         if not centroid_.is_initialized():
             raise ValueError("OpenStudio failed to calculate centroid")
