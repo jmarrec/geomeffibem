@@ -1,8 +1,11 @@
-from typing import List
+from __future__ import annotations
+
+import copy
+from typing import List, Tuple
 
 import numpy as np
 
-from geomeffibem.surface import Surface
+from geomeffibem.surface import Surface, Surface3dEge
 from geomeffibem.vertex import Vertex
 
 
@@ -22,13 +25,13 @@ class Polyhedron:
             if s.name is not None and s.name == name:
                 return s
 
-    def count_vertices(self):
+    def numVertices(self):
         count = 0
         for s in self.surfaces:
             count += len(s.vertices)
         return count
 
-    def makeListOfUniqueVertices(self) -> List[Vertex]:
+    def uniqueVertices(self) -> List[Vertex]:
         uniqueVertices: List[Vertex] = []
         for s in self.surfaces:
             for vertex in s.vertices:
@@ -40,3 +43,124 @@ class Polyhedron:
                 if not found:
                     uniqueVertices.append(vertex)
         return uniqueVertices
+
+    @staticmethod
+    def edgesNotTwoForEnclosedVolumeTest(zonePoly: Polyhedron) -> Tuple[List[Surface3dEge], List[Surface3dEge]]:
+        uniqueSurface3dEdges: List[Surface3dEge] = []
+
+        for surface in zonePoly.surfaces:
+            for edge in surface.to_Surface3dEdges():
+                found = False
+                for uniqEdge in uniqueSurface3dEdges:
+                    if uniqEdge == edge:
+                        uniqEdge.allSurfaces.append(surface)
+                        found = True
+                        break
+                if not found:
+                    uniqueSurface3dEdges.append(edge)
+
+        edgesNotTwoCount = [x for x in uniqueSurface3dEdges if x.count() != 2]
+        edgesTwoCount = [x for x in uniqueSurface3dEdges if x.count() == 2]
+        return edgesNotTwoCount, edgesTwoCount
+
+    def updateZonePolygonsForMissingColinearPoints(self) -> Polyhedron:
+        updZonePoly = copy.deepcopy(self)
+
+        uniqVertices = self.uniqueVertices()
+
+        for surface in updZonePoly.surfaces:
+            insertedVertex = True
+            while insertedVertex:
+                insertedVertex = False
+                for i, edge in enumerate(surface.to_Surface3dEdges()):
+                    for testVertex in uniqVertices:
+                        if edge.containsPoints(testVertex):
+                            if i == len(surface.vertices) - 1:
+                                inext = 0
+                            else:
+                                inext = i + 1
+                            surface.vertices.insert(inext, testVertex)
+                            insertedVertex = True
+                            break
+                    # Break out of the loop on vertices/edges too, start again at while loop
+                    if insertedVertex:
+                        break
+        return updZonePoly
+
+    def isEnclosedVolume(self) -> Tuple[bool, List[Surface3dEge]]:
+        edgeNot2orig, _ = Polyhedron.edgesNotTwoForEnclosedVolumeTest(zonePoly=self)
+        if not edgeNot2orig:
+            return True, []
+
+        print("Updating Polyhedron with collinear vertices on lines")
+        updatedZonePoly = self.updateZonePolygonsForMissingColinearPoints()
+        edgeNot2again, _ = Polyhedron.edgesNotTwoForEnclosedVolumeTest(updatedZonePoly)
+        if not edgeNot2again:
+            return True, []
+
+        return False, list(set(edgeNot2orig).intersection(set(edgeNot2again)))
+
+    def to_os_cpp_code(self):
+        for i, sf in enumerate(self.surfaces):
+            name = sf.name
+            if name[1] == '-':
+                cleaned_name = name[2:].lower().replace('-', '')
+            else:
+                cleaned_name = name.lower().replace('-', '')
+            s = "{"
+            if sf.name is not None:
+                s += "\n "
+            n_vertices = len(sf.vertices)
+            imax = n_vertices - 1
+            for i, v in enumerate(sf.vertices):
+                if i > 0:
+                    s += " "
+                s += f"{{{v.x:+.1f}, {v.y:+.1f}, {v.z:+.1f}}}"
+                if i < imax:
+                    s += ",\n"
+            s += "}"
+
+            print(f'Surface {cleaned_name}({s}, m);')
+            print(f'{cleaned_name}.setName("{name}");')
+            print(f'{cleaned_name}.setSpace(s);\n')
+
+    def to_eplus_cpp_code(self):
+        n_surfaces = len(self.surfaces)
+        print(
+            f"""
+            Array1D_bool enteredCeilingHeight;
+            state->dataGlobal->NumOfZones = 1;
+            enteredCeilingHeight.dimension(state->dataGlobal->NumOfZones, false);
+            state->dataHeatBal->Zone.allocate(state->dataGlobal->NumOfZones);
+            state->dataHeatBal->Zone(1).HasFloor = true;
+            state->dataHeatBal->Zone(1).HTSurfaceFirst = 1;
+            state->dataHeatBal->Zone(1).AllSurfaceFirst = 1;
+            state->dataHeatBal->Zone(1).AllSurfaceLast = {n_surfaces};
+
+            state->dataSurface->Surface.allocate({n_surfaces});
+            """
+        )
+        for i, sf in enumerate(self.surfaces):
+            n_vertices = len(sf.vertices)
+            name = sf.name
+            if 'ROOF' in name:
+                tilt = 0.0
+                c = 'SurfaceClass::Roof'
+            elif 'FLOOR' in name:
+                tilt = 180.0
+                c = 'SurfaceClass::Floor'
+            else:
+                tilt = 90.0
+                c = 'SurfaceClass::Wall'
+
+            print(
+                f'''
+            state->dataSurface->Surface({i+1}).Name = "{name}";
+            state->dataSurface->Surface({i+1}).Sides = {n_vertices};
+            state->dataSurface->Surface({i+1}).Vertex.dimension({n_vertices});
+            state->dataSurface->Surface({i+1}).Class = {c};
+            state->dataSurface->Surface({i+1}).Tilt = {tilt};'''
+            )
+
+            for j, v in enumerate(sf.vertices):
+                print(f"    state->dataSurface->Surface({i+1}).Vertex(1) = Vector({v.x}, {v.y}, {v.z});")
