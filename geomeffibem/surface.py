@@ -1,3 +1,9 @@
+"""Surface and Surface3dEdge objects.
+
+A Surface is a collection of Vertex.
+A Surface3dEdge is a side of a Surface.
+"""
+
 from __future__ import annotations
 
 import copy
@@ -12,15 +18,18 @@ from geomeffibem.vertex import Vertex, isAlmostEqual3dPt, isPointOnLineBetweenPo
 
 
 class Surface3dEge:
+    """An Edge has a start and an end Vertex, and a list of surfaces it was found on."""
+
     def __init__(self, start: Vertex, end: Vertex, firstSurface: Surface):
         self.start = start
         self.end = end
         self.allSurfaces = [firstSurface]
 
     def containsPoints(self, testVertex: Vertex) -> bool:
-        """
-        Checks whether a Point: is not almost equal to the start and end points, and that
-        isPointOnLineBetweenPoints(start, end, testVertex) is true
+        """Checks whether a Point is on the edge.
+
+        It is not almost equal to the start and end points, and,
+        isPointOnLineBetweenPoints(start, end, testVertex) is true.
         """
         return (
             not isAlmostEqual3dPt(self.start, testVertex)
@@ -29,9 +38,11 @@ class Surface3dEge:
         )
 
     def count(self) -> int:
+        """Number of Surfaces it was found on."""
         return len(self.allSurfaces)
 
     def __eq__(self, other):
+        """Operator equal."""
         if not isinstance(other, Surface3dEge):
             raise NotImplementedError("Not implemented for any other types than Surface3dEge itself")
 
@@ -40,6 +51,7 @@ class Surface3dEge:
         )
 
     def __ne__(self, other):
+        """Operator not equal."""
         return not self == other
 
     def __repr__(self):

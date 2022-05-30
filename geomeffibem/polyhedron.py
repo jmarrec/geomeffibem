@@ -1,3 +1,8 @@
+"""A Polyhedron is a collection of Surface objects.
+
+It's meant to represent a volume.
+You can check whether it's enclosed or not.
+"""
 from __future__ import annotations
 
 import copy
@@ -10,7 +15,10 @@ from geomeffibem.vertex import Vertex
 
 
 class Polyhedron:
+    """A collection of Surfaces, meant to represent a Volume."""
+
     def __init__(self, surfaces: List[Surface]):
+        """Constructor from a list of Surface objects."""
         assert isinstance(surfaces, list)
         if not isinstance(surfaces, np.ndarray) and not isinstance(surfaces, list):
             raise ValueError("Expected a list or numpy array of Surfaces")
@@ -21,17 +29,20 @@ class Polyhedron:
         self.surfaces = surfaces
 
     def get_surface_by_name(self, name):
+        """Locate a surface by its name."""
         for s in self.surfaces:
             if s.name is not None and s.name == name:
                 return s
 
     def numVertices(self):
+        """Counts the total number of vertices for all surfaces."""
         count = 0
         for s in self.surfaces:
             count += len(s.vertices)
         return count
 
     def uniqueVertices(self) -> List[Vertex]:
+        """Get a list of unique vertices (uses Vertex __eq__ operator which has a tolerance)."""
         uniqueVertices: List[Vertex] = []
         for s in self.surfaces:
             for vertex in s.vertices:
@@ -46,6 +57,10 @@ class Polyhedron:
 
     @staticmethod
     def edgesNotTwoForEnclosedVolumeTest(zonePoly: Polyhedron) -> Tuple[List[Surface3dEge], List[Surface3dEge]]:
+        """Counts the number of times an Edge is used.
+
+        Returns the ones that isn't used twice (and the ones used twice for debugging/inspection)
+        """
         uniqueSurface3dEdges: List[Surface3dEge] = []
 
         for surface in zonePoly.surfaces:
@@ -64,6 +79,7 @@ class Polyhedron:
         return edgesNotTwoCount, edgesTwoCount
 
     def updateZonePolygonsForMissingColinearPoints(self) -> Polyhedron:
+        """Creates a new Polyhedron with extra vertices when a point is found to be on a line segment."""
         updZonePoly = copy.deepcopy(self)
 
         uniqVertices = self.uniqueVertices()
@@ -88,6 +104,7 @@ class Polyhedron:
         return updZonePoly
 
     def isEnclosedVolume(self) -> Tuple[bool, List[Surface3dEge]]:
+        """Checks if the Polyhedron is enclosed, that is all its edges are used exactly twice."""
         edgeNot2orig, _ = Polyhedron.edgesNotTwoForEnclosedVolumeTest(zonePoly=self)
         if not edgeNot2orig:
             return True, []
@@ -101,6 +118,7 @@ class Polyhedron:
         return False, list(set(edgeNot2orig).intersection(set(edgeNot2again)))
 
     def to_os_cpp_code(self):
+        """For my own convenience when writting OpenStudio tests."""
         for i, sf in enumerate(self.surfaces):
             name = sf.name
             if name[1] == '-':
@@ -125,6 +143,7 @@ class Polyhedron:
             print(f'{cleaned_name}.setSpace(s);\n')
 
     def to_eplus_cpp_code(self):
+        """For my own convenience when writting EnergyPlus tests."""
         n_surfaces = len(self.surfaces)
         print(
             f"""
