@@ -5,7 +5,7 @@ import numpy as np
 import openstudio
 import pytest
 
-from geomeffibem.surface import Surface, Surface3dEge
+from geomeffibem.surface import Surface, Surface3dEge, get_surface_from_surface_like, plot_vertices
 from geomeffibem.vertex import Vertex
 
 
@@ -95,6 +95,8 @@ def test_Surface3dEdge():
     edge = Surface3dEge(start=Vertex(0.0, 0.0, 0.0), end=Vertex(0.0, 10.0, 1.0), firstSurface=surface)
     assert edge != surface.to_Surface3dEdges()[0]
 
+    edge.plot_on_first_surface()
+
 
 def test_Surface_get_plot_axis():
     """Test Surface.get_plot_axis."""
@@ -106,6 +108,11 @@ def test_Surface_get_plot_axis():
 
     xz_wall = Surface.from_numpy_array(np.array([[0.0, 0.0, 0.3], [0.0, 0.0, 0.0], [30.0, 0.0, 0.0], [30.0, 0.0, 0.3]]))
     assert xz_wall.get_plot_axis() == 'xz'
+
+    # This should be able to figure out the plane by itself
+    floor_surface.plot()
+    yz_wall.plot()
+    xz_wall.plot()
 
 
 def test_Surface_centroid():
@@ -184,3 +191,36 @@ def test_surface_plot():
     surface = Surface.Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=0.0, max_z=0.0)
     surface.name = "Floor"
     surface.plot(with_rough_centroid=True, with_os_centroid=True, center_axes=True)
+
+    surface.plot(with_rough_centroid=True, with_os_centroid=False, center_axes=False)
+    # no name
+    surface.name = None
+    surface.plot(with_rough_centroid=True, with_os_centroid=True, center_axes=False)
+    surface.plot(with_rough_centroid=True, with_os_centroid=False, center_axes=False)
+    surface.plot(name="Custom", with_os_centroid=False, center_axes=False)
+    surface.plot(name=False, with_os_centroid=False, center_axes=False)
+
+    with pytest.raises(ValueError):
+        plot_vertices(surface, plane='wrong')
+
+
+def test_get_surface_from_surface_like():
+    """Test get_surface_from_surface_like."""
+    mylist = [
+        [+0.0, +0.0, +0.0],
+        [-10.0, +0.0, +0.0],
+        [-10.0, +10.0, +0.0],
+        [+0.0, +10.0, +0.0],
+    ]
+    assert isinstance(get_surface_from_surface_like(mylist), Surface)
+    assert isinstance(get_surface_from_surface_like(np.array(mylist)), Surface)
+    surface = Surface.Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=0.0, max_z=0.0)
+    surface.name = "Floor"
+    assert isinstance(get_surface_from_surface_like(surface), Surface)
+    assert isinstance(get_surface_from_surface_like(surface.to_Point3dVector()), Surface)
+
+    m = openstudio.model.Model()
+    os_sf = surface.to_OSSurface(m)
+    assert isinstance(get_surface_from_surface_like(os_sf), Surface)
+
+    assert isinstance(get_surface_from_surface_like(surface.vertices), Surface)
