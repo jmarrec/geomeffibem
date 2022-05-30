@@ -5,8 +5,7 @@ import openstudio
 import pytest
 
 from geomeffibem.polyhedron import Polyhedron
-from geomeffibem.surface import Surface, Surface3dEge
-from geomeffibem.vertex import Vertex
+from geomeffibem.surface import Surface
 
 
 @pytest.fixture
@@ -48,7 +47,6 @@ def zonePoly():
 @pytest.fixture
 def zonePolySplitWall(zonePoly):
     """A fixture to create a Zone Polyhedron with a split wall."""
-
     wall = zonePoly.get_surface_by_name('1-SOUTH')
     new_walls = wall.split_into_n_segments(n_segments=2, axis='x')
 
