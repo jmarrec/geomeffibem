@@ -8,6 +8,7 @@ from geomeffibem.surface import Surface
 
 
 def test_surface_rectangle():
+    """Tests Surface.Rectangle factory."""
     surface = Surface.Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=0.0, max_z=0.0)
     assert np.array_equal(
         surface.to_numpy(),
@@ -39,6 +40,7 @@ def test_surface_rectangle():
 
 
 def test_surface_roundtrip_openstudio():
+    """Tests to/from openstudio.model.Surface."""
     surface = Surface.Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=0.0, max_z=0.0)
     m = openstudio.model.Model()
     sf = openstudio.model.Surface(surface.to_Point3dVector(), m)
@@ -51,6 +53,7 @@ def test_surface_roundtrip_openstudio():
 
 
 def test_surface_roundtrip_numpy():
+    """Tests to/from numpy."""
     surface = Surface.Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=0.0, max_z=0.0)
     surface2 = Surface.from_numpy_array(surface.to_numpy())
     assert np.array_equal(surface.to_numpy(), surface2.to_numpy())

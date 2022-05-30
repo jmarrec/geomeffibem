@@ -21,6 +21,7 @@ class Surface3dEge:
     """An Edge has a start and an end Vertex, and a list of surfaces it was found on."""
 
     def __init__(self, start: Vertex, end: Vertex, firstSurface: Surface):
+        """Constructor."""
         self.start = start
         self.end = end
         self.allSurfaces = [firstSurface]
@@ -55,9 +56,11 @@ class Surface3dEge:
         return not self == other
 
     def __repr__(self):
+        """Repr."""
         return f"start={self.start}, end={self.end}, count={self.count()}, firstSurface={self.allSurfaces[0].name}"
 
     def plot_on_first_surface(self, ax=None):
+        """Plots this segment in red atop the outline of the Surface it came from."""
         surface = self.allSurfaces[0]
 
         if ax is None:
@@ -67,8 +70,11 @@ class Surface3dEge:
 
 
 class Surface:
+    """A 3D Surface."""
+
     @staticmethod
     def from_numpy_array(arr) -> Surface:
+        """Factory method to construct from a numpy array of 3-coordinates arrays."""
         if isinstance(arr, list):
             arr = np.array(arr)
         if arr.shape[1] != 3:
@@ -76,11 +82,13 @@ class Surface:
         return Surface([Vertex.from_numpy(x) for x in arr])
 
     @staticmethod
-    def from_Point3dVector(points) -> Surface:
+    def from_Point3dVector(points: Union[openstudio.Point3dVector, List[openstudio.Point3d]]) -> Surface:
+        """Factory method to construct from an openstudio Point3dVector or a list of Point3d."""
         return Surface(vertices=[Vertex.from_Point3d(x) for x in points])
 
     @staticmethod
-    def from_Surface(openstudio_surface: openstudio.openstudiomodelgeometry.Surface) -> Surface:
+    def from_Surface(openstudio_surface: openstudio.model.Surface) -> Surface:
+        """Factory method to construct from an openstudio.model.Surface."""
         if not isinstance(openstudio_surface, openstudio.openstudiomodelgeometry.Surface):
             raise ValueError("Expected an openstudio.model.Surface")
         return Surface(
@@ -90,6 +98,7 @@ class Surface:
 
     @staticmethod
     def Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=0.0, max_z=0.0) -> Surface:
+        """Factory method to easily create an rectangle Surface."""
         vertices_arr = np.array(
             [
                 [min_x, min_y, max_z],
@@ -103,6 +112,7 @@ class Surface:
         return Surface(vertices=vertices)
 
     def __init__(self, vertices, name=None):
+        """Surface constructor."""
         if not isinstance(vertices, np.ndarray) and not isinstance(vertices, list):
             raise ValueError("Expected a list or numpy array of Vertex")
 
@@ -118,6 +128,7 @@ class Surface:
             vertex.surface = self
 
     def get_plane(self) -> Plane:
+        """Returns the Plane of the Surface."""
         if self.plane is not None:
             return self.plane
         plane = openstudio.Plane(self.to_Point3dVector())
@@ -125,6 +136,10 @@ class Surface:
         return self.plane
 
     def get_plot_axis(self) -> str:
+        """Returns a string representation of the plane it is on.
+
+        TODO: raises if not exactly on 'xy', 'xz' or 'yz'
+        """
         plane = self.get_plane()
         tol = 0.001
         if abs(abs(plane.a) - 1) < tol:
@@ -137,14 +152,11 @@ class Surface:
         raise ValueError("Surface is not Planar!")
 
     def os_area(self) -> Vertex:
-        """
-        Returns area of the surface via openstudio
-        """
+        """Returns area of the surface via openstudio."""
         return openstudio.getArea(self.to_Point3dVector()).get()
 
     def rough_centroid(self) -> Vertex:
-        """
-        Returns the centroid calculated in a rough way: the mean of the coordinates
+        """Returns the centroid calculated in a rough way: the mean of the coordinates.
 
         Args:
         ------
@@ -153,8 +165,7 @@ class Surface:
         return Vertex.from_numpy(np.array([x.to_numpy() for x in self.vertices]).mean(axis=0))
 
     def os_centroid(self) -> Vertex:
-        """
-        Returns the centroid via openstudio
+        """Returns the centroid via openstudio.
 
         Args:
         ------
@@ -166,21 +177,19 @@ class Surface:
         return Vertex.from_Point3d(centroid_.get())
 
     def to_Point3dVector(self) -> List[openstudio.Point3d]:
-        """
-        Converts vertices to a list openstudio.Point3d
-        """
+        """Converts vertices to a list openstudio.Point3d."""
         return [v.to_Point3d() for v in self.vertices]
 
     def to_OSSurface(self, model: openstudio.model.Model) -> openstudio.model.Surface:
+        """Creates an openstudio.model.Surface in the model passed as argument."""
         return openstudio.model.Surface(self.to_Point3dVector(), model)
 
     def to_numpy(self) -> np.ndarray:
-        """
-        Get a numpy array representing the vertices
-        """
+        """Get a numpy array representing the vertices."""
         return np.array([v.to_numpy() for v in self.vertices])
 
     def to_Surface3dEdges(self) -> List[Surface3dEge]:
+        """Converts vertex pairs to Surface3dEge."""
         edges = []
         for i, curVertex in enumerate(self.vertices):
             if i == len(self.vertices) - 1:
@@ -191,8 +200,9 @@ class Surface:
         return edges
 
     def split_into_n_segments(self, n_segments, axis=None, plot=False) -> List[Surface]:
-        """
-        Splits a surface in N equal segments. If axis is not passed, it defaults to the first one of the plane
+        """Splits a surface in N equal segments.
+
+        If axis is not passed, it defaults to the first one of the plane
         eg: for a plane 'xy' it splits on 'x'
         """
         plot_axis = self.get_plot_axis()
@@ -239,8 +249,7 @@ class Surface:
         return new_surfaces
 
     def rotate(self, degrees: float) -> Surface:
-        """
-        Rotates a surface by an amount of degrees
+        """Rotates a surface by an amount of degrees.
 
         Args:
         -----
@@ -254,9 +263,7 @@ class Surface:
         return Surface.from_Point3dVector(rot * self.to_Point3dVector())
 
     def plot(self, name: Union[bool, str] = True, **kwargs):
-        """
-        Calls plot_vertices, cf help(plot_vertices)
-        """
+        """Calls plot_vertices, cf help(plot_vertices)."""
         if isinstance(name, str):
             name = name
         elif name:
@@ -264,6 +271,7 @@ class Surface:
         return plot_vertices(surface_like=self, name=name, **kwargs)
 
     def __repr__(self):
+        """Repr."""
         s = ""
         if self.name is not None:
             s += f"Surface '{self.name}' = "
@@ -282,9 +290,7 @@ class Surface:
 
 
 def get_surface_from_surface_like(surface_like: Union[Surface, List[Vertex], openstudio.model.Surface]) -> Surface:
-    """
-    helper to get a Surface (class) from a surface like object
-    """
+    """Helper to get a Surface (class) from a surface like object."""
     if isinstance(surface_like, openstudio.openstudiomodelgeometry.Surface):
         surface = Surface.from_Surface(surface_like)
     elif isinstance(surface_like, Surface):
@@ -317,8 +323,7 @@ def plot_vertices(
     # Passed to ax.plot/plt.plot
     **kwargs,
 ):
-    """
-    Plot any surface-like object in 2D
+    """Plot any surface-like object in 2D.
 
     Accepts a Surface, a list or numpy array of Vertex, or an openstudio.openstudiomodelgeometry.Surface object
 
