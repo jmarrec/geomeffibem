@@ -4,8 +4,8 @@
 import openstudio
 import pytest
 
-from geomeffibem.polyhedron import Polyhedron
-from geomeffibem.surface import Surface
+from geomeffibem.polyhedron import Polyhedron, edgesInBoth
+from geomeffibem.surface import Surface, Surface3dEge
 
 
 @pytest.fixture
@@ -91,8 +91,9 @@ def test_polyhedron_not_enclosed(zonePoly):
 
 def test_cpp_generation(zonePoly):
     """Just trying to get coverage to ignore that stuff."""
-    zonePoly.to_os_cpp_code()
     zonePoly.to_eplus_cpp_code()
+    zonePoly.surfaces[0].name = None
+    zonePoly.to_os_cpp_code()
 
 
 def test_polyhedron_constructor():
@@ -102,3 +103,15 @@ def test_polyhedron_constructor():
 
     with pytest.raises(ValueError):
         Polyhedron(surfaces=[5])
+
+
+def test_edgesInBoth():
+    """Test the helper edgesInBoth."""
+    surface = Surface.Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=0.0, max_z=0.0)
+    surface.name = 'Floor'
+    edges = surface.to_Surface3dEdges()
+    assert len(edges) == 4
+    assert len(edgesInBoth(edges, edges)) == 4
+    assert len(edgesInBoth(edges, edges[:2])) == 2
+    assert len(edgesInBoth(edges, [])) == 0
+    assert len(edgesInBoth([], edges)) == 0

@@ -119,7 +119,10 @@ class Polyhedron:
     def to_os_cpp_code(self):
         """For my own convenience when writting OpenStudio tests."""
         for i, sf in enumerate(self.surfaces):
-            name = sf.name
+            if sf.name is not None:
+                name = sf.name
+            else:
+                name = f"Surface {i+1}"
             if name[1] == '-':
                 cleaned_name = name[2:].lower().replace('-', '')
             else:
