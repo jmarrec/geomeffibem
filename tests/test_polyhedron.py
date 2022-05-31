@@ -5,7 +5,7 @@ import openstudio
 import pytest
 
 from geomeffibem.polyhedron import Polyhedron, edgesInBoth
-from geomeffibem.surface import Surface, Surface3dEge
+from geomeffibem.surface import Surface
 
 
 @pytest.fixture
