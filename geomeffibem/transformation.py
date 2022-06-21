@@ -1,3 +1,5 @@
+"""Transformations: Rotation, Translations, and combinations of both."""
+
 from __future__ import annotations
 
 from typing import Optional
@@ -10,9 +12,11 @@ from geomeffibem.vertex import Vertex
 
 
 class Transformation:
+    """Transformation class."""
+
     @staticmethod
     def Rotation(axis: Vertex, radians: float, point: Optional[Vertex] = None) -> Transformation:
-
+        """Constructs a Rotation Transformation (factory method)."""
         temp = axis.normalize()
         normalVector = temp.to_numpy()
         P = np.outer(normalVector, normalVector)
@@ -45,6 +49,7 @@ class Transformation:
 
     @staticmethod
     def Translation(translation: Vertex) -> Transformation:
+        """Constructs a Translation Transformation (factory method)."""
         result = np.identity(4)
         result[0, 3] = translation.x
         result[1, 3] = translation.y
@@ -55,6 +60,7 @@ class Transformation:
     # def RotationAroundPoint(point: Vertex, axis: Vertex, radians) -> Transformation
 
     def __init__(self, matrix: np.ndarray = None):
+        """Constructor for Transformation."""
         if matrix is None:
             matrix = np.identity(4)
         elif matrix.shape != (4, 4):
@@ -62,12 +68,18 @@ class Transformation:
         self.matrix = matrix
 
     def rotationMatrix(self) -> np.ndarray:
+        """Returns the rotation portion of the Transformation."""
         return self.matrix[:-1, :-1]
 
-    def translation(self) -> np.ndarray:
+    def translation(self) -> Vertex:
+        """Returns the translation portion of the Transformation."""
         return Vertex(self.matrix[0, 3], self.matrix[1, 3], self.matrix[2, 3])
 
-    def __mul__(self, other):
+    def __mul__(self, other):  # -> Union[Vertex, Transformation, np.ndarray, Surface, Plane]:
+        """Multiplies self by other.
+
+        Accepts various objects: Vertex, Transformation, List of Vertex, Surface, Plane.
+        """
         if isinstance(other, Vertex):
             temp = np.matmul(self.matrix, np.append(other.to_numpy(), 1.0))
             return Vertex(temp[0], temp[1], temp[2])
@@ -103,4 +115,5 @@ class Transformation:
             raise ValueError(f"Not implemented for type {type(other)}")
 
     def __repr__(self):
+        """Repr."""
         return f"Transformation:\n{self.matrix.__str__()}"

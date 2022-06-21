@@ -47,7 +47,7 @@ class Surface3dEge:
         )
 
     def length(self) -> float:
-        """Compute distance from start to end"""
+        """Compute distance from start to end."""
         return distance(self.start, self.end)
 
     def count(self) -> int:
@@ -167,7 +167,7 @@ class Surface:
         raise NotImplementedError("Surface is not on a standard plane!")
 
     def plane(self) -> Plane:
-        """Compute the plane from outwardNormal and the first point, not using OpenStudio"""
+        """Compute the plane from outwardNormal and the first point, not using OpenStudio."""
         normalVector = self.outwardNormal()
         if not np.isclose(normalVector.length(), 1.0):
             raise ValueError("Normal Unit Vector doesn't appear to be a unit vector")
@@ -183,23 +183,24 @@ class Surface:
         return p
 
     def area(self) -> float:
-        """Compute area of the surface"""
+        """Compute area of the surface."""
         newellVector = getNewellVector(self.vertices)
         return newellVector.length() / 2.0
 
     def outwardNormal(self) -> Vertex:
-        """Returns the outward normal (normal unit vector)"""
+        """Returns the outward normal (normal unit vector)."""
         return getOutwardNormal(self.vertices)
 
     def tilt(self) -> float:
-        """Returns the tilt of the surface, in radians, that is the angle between the outwardNormal and the Z axis"""
+        """Returns the tilt of the surface, in radians, that is the angle between the outwardNormal and the Z axis."""
         z = Vertex(0.0, 0.0, 1.0)
         return getAngle(self.outwardNormal(), z)
 
     def azimuth(self) -> float:
-        """Returns the azimuth of the surface, in radians
+        """Returns the azimuth of the surface, in radians.
 
-        That is the angle between the outwardNormal and the North axis (Y-axis)"""
+        That is the angle between the outwardNormal and the North axis (Y-axis).
+        """
         normal = self.outwardNormal()
         north = Vertex(0.0, 1.0, 0.0)
         angle = getAngle(normal, north)
@@ -212,7 +213,7 @@ class Surface:
         return openstudio.getArea(self.to_Point3dVector()).get()
 
     def perimeter(self) -> float:
-        """Returns the perimeter of the surface"""
+        """Returns the perimeter of the surface."""
         return sum([edge.length() for edge in self.to_Surface3dEdges()])
 
     def rough_centroid(self) -> Vertex:
@@ -303,11 +304,11 @@ class Surface:
 
         Args:
         -----
-            degrees (float): the angle to rotate it by, in degrees. Positive means clockwise
+        * degrees (float): the angle to rotate it by, in degrees. Positive means clockwise
 
         Returns:
         ---------
-            a new Surface object with rotated vertices
+        * a new Surface object with rotated vertices
         """
         rot = openstudio.Transformation.rotation(openstudio.Vector3d(0, 0, 1), -openstudio.degToRad(degrees))
         return Surface.from_Point3dVector(rot * self.to_Point3dVector())

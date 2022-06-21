@@ -37,6 +37,7 @@ class Vertex:
         self.surface = None
 
     def copy(self):
+        """Make a copy of this Vertex."""
         return Vertex(self.x, self.y, self.z)
 
     def get_coords_on_plane(self, plane='xy') -> Tuple[float, float]:
@@ -51,17 +52,17 @@ class Vertex:
         raise ValueError("Expected plane to be 'xy', 'xz' or 'yz'.")
 
     def length(self) -> float:
-        """Get the length of the vector"""
+        """Get the length of the vector."""
         return np.sqrt(np.sum(self.to_numpy() ** 2))
 
     def normalize(self) -> Vertex:
-        """Normalize to a length of 1, returns a copy"""
+        """Normalize to a length of 1, returns a copy."""
         v = self.copy()
         v.setLength(1.0)
         return v
 
     def setLength(self, newLength: float) -> None:
-        """Change length of vector"""
+        """Change length of vector, in place."""
         currentLength = self.length()
         if currentLength > 0:
             mult = newLength / currentLength
@@ -72,12 +73,15 @@ class Vertex:
             raise ValueError("Cannot normalize a vector of length 0")
 
     def dot(self, other) -> float:
-        """Computes the dot (scalar, inner product) product of two vectors (a.b)"""
+        """Computes the dot / scalar / inner product product of two vectors.
+
+        (a.b).
+        """
         # return np.dot(v.to_numpy(), v2.to_numpy())
         return self.x * other.x + self.y * other.y + self.z * other.z
 
     def cross(self, other, normalize: bool = False) -> Vertex:
-        """Computes the cross product (a x b), which is a vector perpendicular to both a and b"""
+        """Computes the cross product (a x b), which is a vector perpendicular to both a and b."""
         v = Vertex(
             x=(self.y * other.z - self.z * other.y),
             y=(self.z * other.x - self.x * other.z),
@@ -88,11 +92,11 @@ class Vertex:
         return v
 
     def outer_product(self, other) -> np.ndarray:
-        """Compute the outer product of this by another vector"""
+        """Compute the outer product of this by another vector."""
         return np.outer(self.to_numpy(), other.to_numpy())
 
     def __add__(self, other) -> Vertex:
-        """Return a + b"""
+        """Return a + b."""
         return Vertex(x=self.x + other.x, y=self.y + other.y, z=self.z + other.z)
 
     def __neg__(self):
@@ -100,7 +104,7 @@ class Vertex:
         return Vertex(-self.x, -self.y, -self.z)
 
     def __sub__(self, other) -> Vertex:
-        """Return a - b"""
+        """Return a - b."""
         return self + -other
         # return Vertex(
         #     x=self.x - other.x,
@@ -168,14 +172,14 @@ def isPointOnLineBetweenPoints(start: Vertex, end: Vertex, test: Vertex, tol: fl
 
 
 def getAngle(start: Vertex, end: Vertex) -> float:
-    """Returns the angle between two vectors, in radians"""
+    """Returns the angle between two vectors, in radians."""
     start.normalize()
     end.normalize()
     return np.arccos(start.dot(end))
 
 
 def getNewellVector(points: List[Vertex]) -> Vertex:
-    """Compute Newell vector from a list of points, direction is same as outward normal magnitude is twice the area"""
+    """Compute Newell vector from a list of points, direction is same as outward normal magnitude is twice the area."""
     n = len(points)
     if n < 3:
         raise ValueError("Cannot compute Newell Vector for less than 3 points")
@@ -190,6 +194,6 @@ def getNewellVector(points: List[Vertex]) -> Vertex:
 
 
 def getOutwardNormal(points: list[Vertex]) -> Vertex:
-    """Compute outward normal from a list of points"""
+    """Compute outward normal from a list of points."""
     newellVector = getNewellVector(points)
     return newellVector.normalize()
