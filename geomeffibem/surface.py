@@ -14,7 +14,15 @@ import numpy as np
 import openstudio
 
 from geomeffibem.plane import Plane
-from geomeffibem.vertex import Vertex, isAlmostEqual3dPt, isPointOnLineBetweenPoints
+from geomeffibem.vertex import (
+    Vertex,
+    distance,
+    getAngle,
+    getNewellVector,
+    getOutwardNormal,
+    isAlmostEqual3dPt,
+    isPointOnLineBetweenPoints,
+)
 
 
 class Surface3dEge:
@@ -37,6 +45,10 @@ class Surface3dEge:
             and not isAlmostEqual3dPt(self.end, testVertex)
             and isPointOnLineBetweenPoints(self.start, self.end, testVertex)
         )
+
+    def length(self) -> float:
+        """Compute distance from start to end"""
+        return distance(self.start, self.end)
 
     def count(self) -> int:
         """Number of Surfaces it was found on."""
@@ -123,7 +135,7 @@ class Surface:
                 raise ValueError(f"Element {i} is not a Vertex object")
 
         self.name = name
-        self.plane = None
+        self.os_plane = None
 
         self.vertices = copy.deepcopy(vertices)
         for vertex in self.vertices:
@@ -131,11 +143,11 @@ class Surface:
 
     def get_plane(self) -> Plane:
         """Returns the Plane of the Surface."""
-        if self.plane is not None:
-            return self.plane
+        if self.os_plane is not None:
+            return self.os_plane
         plane = openstudio.Plane(self.to_Point3dVector())
-        self.plane = Plane(plane.a(), plane.b(), plane.c(), plane.d())
-        return self.plane
+        self.os_plane = Plane(plane.a(), plane.b(), plane.c(), plane.d())
+        return self.os_plane
 
     def get_plot_axis(self) -> str:
         """Returns a string representation of the plane it is on.
@@ -154,9 +166,54 @@ class Surface:
         # TODO
         raise NotImplementedError("Surface is not on a standard plane!")
 
+    def plane(self) -> Plane:
+        """Compute the plane from outwardNormal and the first point, not using OpenStudio"""
+        normalVector = self.outwardNormal()
+        if not np.isclose(normalVector.length(), 1.0):
+            raise ValueError("Normal Unit Vector doesn't appear to be a unit vector")
+        self.vertices[0]
+
+        # d = -thisNormal.x() * point.x() - thisNormal.y() * point.y() - thisNormal.z() * point.z();
+        d = (-normalVector).dot(self.vertices[0])
+
+        p = Plane(normalVector.x, normalVector.y, normalVector.z, d)
+        for i, v in enumerate(self.vertices):
+            if not p.pointOnPlane(v):
+                print(f"Vertex {i} is not on the plane")
+        return p
+
+    def area(self) -> float:
+        """Compute area of the surface"""
+        newellVector = getNewellVector(self.vertices)
+        return newellVector.length() / 2.0
+
+    def outwardNormal(self) -> Vertex:
+        """Returns the outward normal (normal unit vector)"""
+        return getOutwardNormal(self.vertices)
+
+    def tilt(self) -> float:
+        """Returns the tilt of the surface, in radians, that is the angle between the outwardNormal and the Z axis"""
+        z = Vertex(0.0, 0.0, 1.0)
+        return getAngle(self.outwardNormal(), z)
+
+    def azimuth(self) -> float:
+        """Returns the azimuth of the surface, in radians
+
+        That is the angle between the outwardNormal and the North axis (Y-axis)"""
+        normal = self.outwardNormal()
+        north = Vertex(0.0, 1.0, 0.0)
+        angle = getAngle(normal, north)
+        if normal.x < 0:
+            return -angle + 2.0 * np.pi
+        return angle
+
     def os_area(self) -> Vertex:
         """Returns area of the surface via openstudio."""
         return openstudio.getArea(self.to_Point3dVector()).get()
+
+    def perimeter(self) -> float:
+        """Returns the perimeter of the surface"""
+        return sum([edge.length() for edge in self.to_Surface3dEdges()])
 
     def rough_centroid(self) -> Vertex:
         """Returns the centroid calculated in a rough way: the mean of the coordinates."""
