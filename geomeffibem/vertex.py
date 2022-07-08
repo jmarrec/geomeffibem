@@ -112,6 +112,12 @@ class Vertex:
         #     z=self.z - other.z
         # )
 
+    def __mul__(self, other) -> Vertex:
+        """Multiplies each coordinate by a scalar"""
+        if not isinstance(other, int) and not isinstance(other, float):
+            raise ValueError("Multiplication of a vertex by something else than a numeric is not supported")
+        return Vertex(other * self.x, other * self.y, other * self.z)
+
     def to_numpy(self) -> np.ndarray:
         """Export to a numpy array of 3 coordinates."""
         return np.array([self.x, self.y, self.z])
