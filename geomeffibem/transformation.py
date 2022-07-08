@@ -75,6 +75,12 @@ class Transformation:
         """Returns the translation portion of the Transformation."""
         return Vertex(self.matrix[0, 3], self.matrix[1, 3], self.matrix[2, 3])
 
+    def inverse(self) -> Transformation:
+        """Returns a transformation which is the inverse of this"""
+        t = Transformation()
+        t.matrix = np.linalg.inv(self.matrix)
+        return t
+
     def __mul__(self, other):  # -> Union[Vertex, Transformation, np.ndarray, Surface, Plane]:
         """Multiplies self by other.
 
