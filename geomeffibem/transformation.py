@@ -8,7 +8,7 @@ import numpy as np
 
 from geomeffibem.plane import Plane
 from geomeffibem.surface import Surface
-from geomeffibem.vertex import Vertex
+from geomeffibem.vertex import Vertex, getOutwardNormal
 
 
 class Transformation:
@@ -58,6 +58,63 @@ class Transformation:
 
     # @staticmethod
     # def RotationAroundPoint(point: Vertex, axis: Vertex, radians) -> Transformation
+
+    @staticmethod
+    def alignZPrime(zPrime: Vertex) -> Transformation:
+        """Transforms system with z' to regular system.
+
+        will try to align y' with z, but if that fails will align y' with y
+        """
+        xp = None
+        yp = None
+        zp = zPrime.normalize()
+        zAxis = Vertex(0.0, 0.0, 1.0)
+        negXAxis = Vertex(-1.0, 0.0, 0.0)
+
+        # check if face normal is up or down
+        if abs(zp.dot(zAxis)) < 0.99:
+            # not facing up or down, set yPrime along zAxis
+            yp = zAxis - (zp * zp.dot(zAxis))
+            yp = yp.normalize()
+            xp = yp.cross(zp)
+        else:
+            # facing up or down, set xPrime along -xAxis
+            xp = negXAxis - (zp * zp.dot(negXAxis))
+            xp = xp.normalize()
+            yp = zp.cross(xp)
+
+        storage = np.identity(4)
+        storage[0, 0] = xp.x
+        storage[1, 0] = xp.y
+        storage[2, 0] = xp.z
+        storage[0, 1] = yp.x
+        storage[1, 1] = yp.y
+        storage[2, 1] = yp.z
+        storage[0, 2] = zp.x
+        storage[1, 2] = zp.y
+        storage[2, 2] = zp.z
+        return Transformation(matrix=storage)
+
+    @staticmethod
+    def alignFace(vertices: list[Vertex]) -> Transformation:
+        """Transforms face coordinates to regular system, face normal will be z'.
+
+        Will try to align y' with z, but if that fails will align y' with y
+        face origin will be minimum point in x', y' and z'=0
+        will return identity transformation if cannot compute plane for vertices
+        """
+        zPrime: Vertex = getOutwardNormal(vertices)
+        align: Transformation = Transformation.alignZPrime(zPrime)
+        alignedVertices = align.inverse() * vertices
+        minX = alignedVertices[0].x
+        minY = alignedVertices[0].y
+        minZ = alignedVertices[0].z
+        for vertex in alignedVertices:
+            minX = min(minX, vertex.x)
+            minY = min(minY, vertex.y)
+            minZ = min(minZ, vertex.z)
+        translate = Transformation.Translation(Vertex(minX, minY, minZ))
+        return align * translate
 
     def __init__(self, matrix: np.ndarray = None):
         """Constructor for Transformation."""
