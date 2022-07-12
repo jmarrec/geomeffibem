@@ -2,7 +2,7 @@
 
 __author__ = """Julien Marrec"""
 __email__ = 'contact@effibem.com'
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 from geomeffibem.plane import Plane
 from geomeffibem.polyhedron import Polyhedron

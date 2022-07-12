@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "geomeffibem"
-version = "0.1.2"
+version = "0.1.3"
 homepage = "https://github.com/jmarrec/geomeffibem"
 description = "A small library to facilitate some building energy modeling geometry operations with OpenStudio and EnergyPlus in mind."
 authors = ["Julien Marrec <contact@effibem.com>"]
