@@ -299,19 +299,31 @@ class Surface:
 
         return new_surfaces
 
-    def rotate(self, degrees: float) -> Surface:
+    def rotate(self, degrees: float, axis=None) -> Surface:
         """Rotates a surface by an amount of degrees.
 
         Args:
         -----
         * degrees (float): the angle to rotate it by, in degrees. Positive means clockwise
+        * axis (Vertex): if none, uses the Z axis
 
         Returns:
         ---------
         * a new Surface object with rotated vertices
         """
-        rot = openstudio.Transformation.rotation(openstudio.Vector3d(0, 0, 1), -openstudio.degToRad(degrees))
-        return Surface.from_Point3dVector(rot * self.to_Point3dVector())
+        if axis is None:
+            axis = Vertex(0.0, 0.0, 1.0)
+
+        # Lazy load to avoid circular import
+        from geomeffibem.transformation import Transformation
+
+        return Transformation.Rotation(axis=axis, radians=-openstudio.degToRad(degrees)) * self
+
+    def translate(self, translation: Vertex) -> Surface:
+        """Translates a surface along a translation vector."""
+        from geomeffibem.transformation import Transformation
+
+        return Transformation.Translation(translation=translation) * self
 
     def plot(self, name: Union[bool, str] = True, **kwargs):
         """Calls plot_vertices, cf help(plot_vertices)."""
