@@ -6,7 +6,7 @@ Includes utilities to go from/to numpy array and OpenStudio's Point3d
 
 from __future__ import annotations
 
-from typing import Any, Tuple
+from typing import Any, List, Tuple
 
 import numpy as np
 import openstudio
@@ -36,6 +36,10 @@ class Vertex:
         self.z = z
         self.surface = None
 
+    def copy(self):
+        """Make a copy of this Vertex."""
+        return Vertex(self.x, self.y, self.z)
+
     def get_coords_on_plane(self, plane='xy') -> Tuple[float, float]:
         """Returns two coordinates on a given plane."""
         if plane == 'xy':
@@ -46,6 +50,91 @@ class Vertex:
             return self.y, self.z
 
         raise ValueError("Expected plane to be 'xy', 'xz' or 'yz'.")
+
+    def length(self) -> float:
+        """Get the length of the vector."""
+        return np.sqrt(np.sum(self.to_numpy() ** 2))
+
+    def normalize(self) -> Vertex:
+        """Normalize to a length of 1, returns a copy."""
+        v = self.copy()
+        v.setLength(1.0)
+        return v
+
+    def setLength(self, newLength: float) -> None:
+        """Change length of vector, in place."""
+        currentLength = self.length()
+        if currentLength > 0:
+            mult = newLength / currentLength
+            self.x *= mult
+            self.y *= mult
+            self.z *= mult
+        else:
+            raise ValueError("Cannot normalize a vector of length 0")
+
+    def dot(self, other) -> float:
+        """Computes the dot / scalar / inner product product of two vectors.
+
+        (a.b).
+        """
+        # return np.dot(v.to_numpy(), v2.to_numpy())
+        return self.x * other.x + self.y * other.y + self.z * other.z
+
+    def cross(self, other, normalize: bool = False) -> Vertex:
+        """Computes the cross product (a x b), which is a vector perpendicular to both a and b."""
+        v = Vertex(
+            x=(self.y * other.z - self.z * other.y),
+            y=(self.z * other.x - self.x * other.z),
+            z=(self.x * other.y - self.y * other.x),
+        )
+        if normalize:
+            return v.normalize()
+        return v
+
+    def outer_product(self, other) -> np.ndarray:
+        """Compute the outer product of this by another vector."""
+        return np.outer(self.to_numpy(), other.to_numpy())
+
+    def __add__(self, other) -> Vertex:
+        """Return a + b."""
+        return Vertex(x=self.x + other.x, y=self.y + other.y, z=self.z + other.z)
+
+    def __neg__(self):
+        """Return obj negated (-obj)."""
+        return Vertex(-self.x, -self.y, -self.z)
+
+    def __sub__(self, other) -> Vertex:
+        """Return a - b."""
+        return self + -other
+        # return Vertex(
+        #     x=self.x - other.x,
+        #     y=self.y - other.y,
+        #     z=self.z - other.z
+        # )
+
+    def __mul__(self, other) -> Vertex:
+        """Multiplies each coordinate by a scalar."""
+        if not isinstance(other, int) and not isinstance(other, float):
+            raise ValueError("Multiplication of a vertex by something else than a numeric is not supported")
+        return Vertex(self.x * other, self.y * other, self.z * other)
+
+    def __rmul__(self, other) -> Vertex:
+        """Multiplies each coordinate by a scalar."""
+        if not isinstance(other, int) and not isinstance(other, float):
+            raise ValueError("Multiplication of a vertex by something else than a numeric is not supported")
+        return self.__mul__(other)
+
+    def __truediv__(self, other) -> Vertex:
+        """Divides each coordinate by a scalar."""
+        if not isinstance(other, int) and not isinstance(other, float):
+            raise ValueError("Division of a vertex by something else than a numeric is not supported")
+        return Vertex(self.x / other, self.y / other, self.z / other)
+
+    def __floordiv__(self, other) -> Vertex:
+        """Divides each coordinate by a scalar."""
+        if not isinstance(other, int) and not isinstance(other, float):
+            raise ValueError("Division of a vertex by something else than a numeric is not supported")
+        return Vertex(self.x // other, self.y // other, self.z // other)
 
     def to_numpy(self) -> np.ndarray:
         """Export to a numpy array of 3 coordinates."""
@@ -104,3 +193,31 @@ def isPointOnLineBetweenPoints(start: Vertex, end: Vertex, test: Vertex, tol: fl
     if distanceFromPointToLine(start=start, end=end, test=test) < tol:
         return abs(distance(start, end) - (distance(start, test) + distance(test, end))) < tol
     return False
+
+
+def getAngle(start: Vertex, end: Vertex) -> float:
+    """Returns the angle between two vectors, in radians."""
+    start.normalize()
+    end.normalize()
+    return np.arccos(start.dot(end))
+
+
+def getNewellVector(points: List[Vertex]) -> Vertex:
+    """Compute Newell vector from a list of points, direction is same as outward normal magnitude is twice the area."""
+    n = len(points)
+    if n < 3:
+        raise ValueError("Cannot compute Newell Vector for less than 3 points")
+
+    newellVector = Vertex(x=0, y=0, z=0)
+    for i in range(n - 1):
+        v1 = points[i] - points[0]
+        v2 = points[i + 1] - points[0]
+        newellVector += v1.cross(v2)
+
+    return newellVector
+
+
+def getOutwardNormal(points: list[Vertex]) -> Vertex:
+    """Compute outward normal from a list of points."""
+    newellVector = getNewellVector(points)
+    return newellVector.normalize()
