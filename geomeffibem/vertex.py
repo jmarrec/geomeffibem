@@ -113,10 +113,16 @@ class Vertex:
         # )
 
     def __mul__(self, other) -> Vertex:
-        """Multiplies each coordinate by a scalar"""
+        """Multiplies each coordinate by a scalar."""
         if not isinstance(other, int) and not isinstance(other, float):
             raise ValueError("Multiplication of a vertex by something else than a numeric is not supported")
-        return Vertex(other * self.x, other * self.y, other * self.z)
+        return Vertex(self.x * other, self.y * other, self.z * other)
+
+    def __div__(self, other) -> Vertex:
+        """Divides each coordinate by a scalar."""
+        if not isinstance(other, int) and not isinstance(other, float):
+            raise ValueError("Division of a vertex by something else than a numeric is not supported")
+        return Vertex(self.x / other, self.y / other, self.z / other)
 
     def to_numpy(self) -> np.ndarray:
         """Export to a numpy array of 3 coordinates."""
