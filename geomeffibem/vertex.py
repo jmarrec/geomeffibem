@@ -197,8 +197,8 @@ def isPointOnLineBetweenPoints(start: Vertex, end: Vertex, test: Vertex, tol: fl
 
 def getAngle(start: Vertex, end: Vertex) -> float:
     """Returns the angle between two vectors, in radians."""
-    start.normalize()
-    end.normalize()
+    start = start.normalize()
+    end = end.normalize()
     return np.arccos(start.dot(end))
 
 
