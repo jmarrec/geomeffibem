@@ -1,6 +1,6 @@
 """Bounding Box."""
 
-from typing import Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 
@@ -27,7 +27,7 @@ class BoundingBox:
         (x, y, z) = self.dimensions().to_numpy()
         return (width, width * x / y)
 
-    def corners(self) -> np.ndarray:
+    def corners(self) -> Optional[np.ndarray]:
         """Returns an  of all 8 corner Points."""
         # TODO: make it return Vertex?
         if self.isEmpty():
@@ -67,7 +67,7 @@ class BoundingBox:
             self.maxY = max(self.maxY, vertex.y)
             self.maxZ = max(self.maxZ, vertex.z)
 
-    def addPoints(self, vertices) -> None:
+    def addPoints(self, vertices):
         """Adds multiple points and updates the min/max x, y, z."""
         [self.addPoint(v) for v in vertices]
 
