@@ -24,7 +24,7 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
 
-openstudio = { version= "3.4.0", allow-prereleases = true}
+openstudio = { version= "^3.4.0", allow-prereleases = true}
 matplotlib = "^3.5.2"
 pandas = "^1.4.2"
 numpy = "^1.22.4"
