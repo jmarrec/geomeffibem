@@ -47,6 +47,6 @@ jobs:
 
       - uses: codecov/codecov-action@v3
         with:
-          flags: "${{ matrix.os }} - ${{ matrix.python-versions }}"
+          flags: "${{ matrix.os }}-py${{ matrix.python-versions }}"
           fail_ci_if_error: true
           files: coverage.xml
