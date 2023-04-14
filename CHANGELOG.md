@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.5] - 2023-04-14
+### Added
+- Add Surface.Floor and Enforce Upper Left Corner, Counterclockwise convention
+
 ## [0.1.4] - 2023-01-03
 ### Added
 - Relax version requirements on openstudio
@@ -28,7 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First release on PyPI.
 
-[Unreleased]: https://github.com/jmarrec/geomeffibem/compare/v0.1.4...HEAD
+[Unreleased]: https://github.com/jmarrec/geomeffibem/compare/v0.1.5...HEAD
+[0.1.4]: https://github.com/jmarrec/geomeffibem/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/jmarrec/geomeffibem/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/jmarrec/geomeffibem/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/jmarrec/geomeffibem/compare/v0.1.0...v0.1.2
