@@ -2,7 +2,7 @@
 
 __author__ = """Julien Marrec"""
 __email__ = 'contact@effibem.com'
-__version__ = '0.1.4'
+__version__ = '0.1.5'
 
 from geomeffibem.boundingbox import BoundingBox
 from geomeffibem.plane import Plane
