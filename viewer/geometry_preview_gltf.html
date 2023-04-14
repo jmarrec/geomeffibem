@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%=title%></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+
+    <!--<script src="three.r98.min.js"></script>-->
+
+    <!--<script src="three.orbitcontrols.js"></script>-->
+
+    <!--<script src="dat.gui.min.js"></script>-->
+    <!--<script src="dat.gui.0.7.9.js"></script>-->
+
+    <!--<script src="TweenLite.1.16.1.min.js"></script>-->
+    <script src="TweenLite.2.1.3.js"></script>
+    <!--<script src="gsap.3.11.5.js"></script>-->
+
+    <script type="importmap">
+        {
+          "imports": {
+            "three":"./node_modules/three/build/three.module.js",
+            "three/addons/":"./node_modules/three/examples/jsm/",
+            "dat.gui":"./node_modules/dat.gui/build/dat.gui.module.js"
+          }
+        }
+    </script>
+
+    <!--
+       "three": "./three.r151.module.js",
+       "OrbitControls":"./OrbitControls.js",
+       "GLTFLoader":"./GLTFLoader.js"
+       "three":"./node_modules/three/build/",
+       "three/addons/":"./node_modules/three/examples/jsm/"
+    -->
+
+  </head>
+  <body>
+    <style type="text/css">
+#heads-up {
+  background-color:#ddd;
+  border-radius:8px;
+  display:none;
+  padding:0 5px 10px;
+  opacity:0.85;
+  position:absolute;
+  left:50px;
+  text-align:left;
+  z-index:10;
+}
+#color-bar {
+  border:1px solid #777;
+  position:absolute;
+  bottom:20px;
+  left:20px;
+  pointer-events:all;
+}
+#color-bar-container {
+  display:none;
+  pointer-events:none;
+  position:absolute;
+  transition:height 0.5s ease, transform 0.5s ease, top 0.5s ease, left 0.5s ease;
+}
+.ignore-transition {
+  transition:height 0.5s ease, transform 0.5s ease !important;
+}
+.color-bar-tick {
+  background-color:#777;
+  height:15px;
+  width:2px;
+  position:absolute;
+}
+.color-bar-text {
+  transform:rotate(300deg);
+  transform-origin:top left;
+  display:inline-block;
+  position:absolute;
+  color:#777;
+  transition: transform 0.5s ease;
+}
+.rotate {
+  height:1px !important; /* Fix for dragging when rotated */
+  transform:rotate(90deg);
+}
+.rotate .color-bar-text {
+  transform:rotate(270deg);
+}
+    </style>
+
+    <script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as dat from 'dat.gui';
+
+// global variable, set in init
+var os_data;
+
+
+var renderer, scene, light, scene_objects, scene_edges, object_edges, coincident_objects, back_objects, dot_points;
+var perspectiveCamera, orthographicCamera, perspectiveControls, orthographicControls;
+var project, materials, variable;
+var dataFolder, dateTimeControl;
+var colorBar, colorBarContainer, colorBarHeight, colorBarWidth;
+var mouseDownX, mouseDownY;
+var dragXStart, dragYStart;
+
+var raycaster;
+var mouse;
+var headsUp;
+var intersected = [];
+var selected_material, unknown_material, dot_material;
+
+var getStringFromLocalStorage = function (key, defaultValue) {
+  try {
+    value = localStorage.getItem(key);
+    if (value == null){
+      return defaultValue;
+    }else{
+      return value;
+    }
+  } catch(e) {
+    return defaultValue;
+  }
+}
+
+var getBoolFromLocalStorage = function (key, defaultValue) {
+  try {
+    value = localStorage.getItem(key);
+    if (value == null){
+      return defaultValue;
+    }else{
+      return (value == 'true');
+    }
+  } catch(e) {
+    return defaultValue;
+  }
+}
+
+var getFloatFromLocalStorage = function (key, defaultValue) {
+  try {
+    value = localStorage.getItem(key);
+    if (value == null){
+      return defaultValue;
+    }else{
+      return parseFloat(value);
+    }
+  } catch(e) {
+    return defaultValue;
+  }
+}
+
+var setLocalStorage = function (key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch(e) {
+  }
+}
+
+var settings = {
+  renderBy: 'Surface Type',
+  showStory: 'All Stories',
+  showAirLoop: 'All Loops',
+  findAdjacencyIssues: false,
+  findAdjacencyThreshold: 1,
+  searchType: getStringFromLocalStorage('searchType', 'Surfaces'),
+  searchName: getStringFromLocalStorage('searchName', ''),
+  showFloors: getBoolFromLocalStorage('showFloors', true),
+  showWalls: getBoolFromLocalStorage('showWalls', true),
+  showRoofCeilings: getBoolFromLocalStorage('showRoofCeilings', true),
+  showWindows: getBoolFromLocalStorage('showWindows', true),
+  showDoors: getBoolFromLocalStorage('showDoors', true),
+  showShading: getBoolFromLocalStorage('showShading', true),
+  showPartitions: getBoolFromLocalStorage('showPartitions', true),
+  showWireframe: getBoolFromLocalStorage('showWireframe', true),
+  xView: function() {setAllCameraAngles(0, 0, 1);},
+  yView: function() {setAllCameraAngles(-90, 0, 1);},
+  zView: function() {setAllCameraAngles(0, 90, 1);},
+  reset: function() {setAllCameraAngles(-30, 30, 1);},
+  orthographic: getBoolFromLocalStorage('showWireframe', false),
+  xSection: 0,
+  ySection: 0,
+  zSection: 0,
+  variableName: '',
+  colorScheme: getStringFromLocalStorage('colorScheme', 'diverging'),
+  daySlider: 0,
+  hourSlider: 1,
+  cycleHour: false,
+  cycleSpeed: getFloatFromLocalStorage('cycleSpeed', 1.0),
+  rotateColorBar: getBoolFromLocalStorage('rotateColorBar', false),
+  dateTime: ''
+};
+
+var getColor = function (x, min, max, palette) {
+
+  if (x == null){
+    return new THREE.Color(255, 255, 255);
+  }
+
+  x = Math.min(Math.max(x, min), max);
+  var percent = (x-min)/(max-min);
+  var r = 1 - percent;
+  var b = 1 - percent;
+  var g = 1 - percent;
+
+  switch (palette) {
+    case 'sequential':
+      r = 1 - 0.392 * (1 + erf((percent - 0.869) / 0.255));
+      g = 1.021 - 0.456 * (1 + erf((percent - 0.527) / 0.376));
+      b = 1 - 0.493 * (1 + erf((percent - 0.272)/0.309));
+      break;
+    case 'diverging':
+      r = 0.237 - 2.13 * percent + 26.92 * Math.pow(percent, 2) - 65.5 * Math.pow(percent, 3) + 63.5 * Math.pow(percent, 4) - 22.36 * Math.pow(percent, 5);
+      g = Math.pow((0.572 + 1.524 * percent - 1.811 * Math.pow(percent, 2)) / (1 - 0.291 * percent + 0.1574 * Math.pow(percent, 2)), 2);
+      b = 1 / (1.579 - 4.03 * percent + 12.92 * Math.pow(percent, 2) - 31.4 * Math.pow(percent, 3) + 48.6 * Math.pow(percent, 4) - 23.36 * Math.pow(percent, 5));
+      break;
+    case 'rainbow':
+      r = (0.472 - 0.567 * percent + 4.05 * Math.pow(percent, 2)) / (1 + 8.72 * percent - 19.17 * Math.pow(percent, 2) + 14.1 * Math.pow(percent, 3));
+      g = 0.108932 - 1.22635 * percent + 27.284 * Math.pow(percent, 2) - 98.577 * Math.pow(percent, 3) + 163.3 * Math.pow(percent, 4) - 131.395 * Math.pow(percent, 5) + 40.634 * Math.pow(percent, 6);
+      b = 1 / (1.97 + 3.54 * percent - 68.5 * Math.pow(percent, 2) + 243 * Math.pow(percent, 3) - 297 * Math.pow(percent, 4) + 125 * Math.pow(percent, 5));
+      break;
+  }
+  return new THREE.Color(r, g, b);
+};
+function fitInWindow() {
+  var container = document.getElementById('color-bar-container');
+  var style = container.style;
+  if (!settings.rotateColorBar) {
+    var height = colorBarHeight + 112;
+    var width = colorBarWidth + 42;
+    var top = parseInt(style.top);
+    var left = parseInt(style.left);
+    if (left < 0) {
+      style.left = 0;
+    } else if (window.innerWidth < (left + width)) {
+      style.left = (window.innerWidth - width) + 'px';
+    }
+    if (top < 0) {
+      style.top = 0;
+    } else if (window.innerHeight < (top + height)) {
+      style.top = (window.innerHeight - height) + 'px';
+    }
+  } else {
+    var half = (colorBarWidth + 42) / 2;
+    var height = colorBarWidth + 42;
+    var width = colorBarHeight + 112;
+    var top = parseInt(style.top) - half;
+    var left = parseInt(style.left) + half;
+    if (left < 0) {
+      style.left = -half + 'px';
+    } else if (window.innerWidth < (left + width)) {
+      style.left = (window.innerWidth - width - half) + 'px';
+    }
+    if (top < 0) {
+      style.top = half + 'px';
+    } else if (window.innerHeight < (top + height)) {
+      style.top = (window.innerHeight - height + half) + 'px';
+    }
+  }
+}
+function updateColorBarSelection(value) {
+  var line = document.getElementById('color-bar-selection-line');
+  var text = document.getElementById('color-bar-selection-text');
+  if (value != '') {
+    var percent = (value - variable.valueMin) / (variable.valueMax - variable.valueMin);
+    line.style.left = (20 + colorBarWidth * percent) + 'px';
+    text.style.left = (10 + colorBarWidth * percent) + 'px';
+    text.innerHTML = Math.round(value * 100) / 100;
+  } else {
+    line.style.display = 'none';
+    text.style.display = 'none';
+  }
+}
+function updateBalloon(object) {
+  var span = document.getElementById('balloon-variable-name');
+  if (span) span.innerHTML = object.userData.variableName;
+
+  span = document.getElementById('balloon-variable-key-name');
+  if (span) span.innerHTML = object.userData.variableKeyName;
+
+  span = document.getElementById('balloon-variable-date');
+  if (span) span.innerHTML = object.userData.variableDate;
+
+  span = document.getElementById('balloon-variable-time');
+  if (span) span.innerHTML = object.userData.variableTime;
+
+  span = document.getElementById('balloon-variable-value');
+  if (span) span.innerHTML = object.userData.variableValue;
+}
+
+function removeSelection() {
+  selectObject(null);
+  headsUp.style.display = 'none';
+  document.body.style.cursor = 'auto';
+  document.getElementById('color-bar-selection-line').style.display = 'none';
+  document.getElementById('color-bar-selection-text').style.display = 'none';
+}
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+function drag(ev) {
+  dragXStart = ev.x;
+  dragYStart = ev.y;
+}
+function drop(ev) {
+  ev.preventDefault();
+  var container = document.getElementById('color-bar-container')
+  container.classList.add('ignore-transition');
+  var style = container.style;
+  var top = parseInt(style.top) + (ev.y - dragYStart);
+  var left = parseInt(style.left) + (ev.x - dragXStart);
+  style.top = top + 'px';
+  style.left = left + 'px';
+  setTimeout(function() {container.classList.remove('ignore-transition');}, 1);
+  fitInWindow();
+  setLocalStorage('colorBarTop', parseInt(style.top));
+  setLocalStorage('colorBarLeft', parseInt(style.left));
+}
+
+
+function parseMaterials(json) {
+  var materials = {};
+  var loader = new THREE.MaterialLoader();
+  for ( var i = 0, l = json.length; i < l; i ++ ) {
+    var data = json[ i ];
+    var material = loader.parse( data );
+    material.uuid = data.uuid;
+    material.name = data.name;
+    materials[ data.name ] = material;
+  }
+  return materials;
+}
+
+function cameraLookAt() {
+  return new THREE.Vector3(os_data.metadata.boundingBox.lookAtX, os_data.metadata.boundingBox.lookAtZ, -os_data.metadata.boundingBox.lookAtY);
+}
+
+function cameraRadius() {
+  return 4 * os_data.metadata.boundingBox.lookAtR;
+}
+
+function setAllCameraAngles(theta, phi, tweenTime) {
+  var perspectiveTweenTime = tweenTime;
+  var orthographicTweenTime = tweenTime;
+  if (settings.orthographic){
+    perspectiveTweenTime = 0;
+  }else{
+    orthographicTweenTime = 0;
+  }
+  setCameraAngles(perspectiveCamera, perspectiveControls, theta, phi, perspectiveTweenTime);
+  setCameraAngles(orthographicCamera, orthographicControls, theta, phi, orthographicTweenTime);
+}
+
+// theta is rotation about OpenStudio Z in degrees, phi is rotation above ground plane in degrees
+function setCameraAngles(camera, controls, theta, phi, tweenTime) {
+  var aim = cameraLookAt();
+
+  var startRadius = Math.sqrt(Math.pow(camera.position.x - aim.x, 2) + Math.pow(camera.position.y - aim.y, 2) + Math.pow(camera.position.z - aim.z, 2));
+  var endRadius = cameraRadius();
+  var endX = endRadius * Math.cos(theta * Math.PI / 180.0) * Math.cos(phi * Math.PI / 180.0) + aim.x; // X in OpenStudio coordinates
+  var endY = endRadius * Math.sin(phi * Math.PI / 180.0) + aim.y; // Z in OpenStudio coordinates
+  var endZ = -endRadius * Math.sin(theta * Math.PI / 180.0) * Math.cos(phi * Math.PI / 180.0) + aim.z; // Y in OpenStudio coordinates
+
+  var endUpX = 0;
+  var endUpY = 1;
+  var endUpZ = 0;
+  if (phi == 90){
+    endUpX = 0;
+    endUpY = 1;
+    endUpZ = -0.01;
+  }
+
+  var target = {
+    progress: 0,
+    start: {
+      x: camera.position.x,
+      y: camera.position.y,
+      z: camera.position.z,
+      r: startRadius,
+      theta: Math.acos(camera.position.z / startRadius),
+      phi: Math.atan2(camera.position.y, camera.position.x),
+      upX: camera.up.x,
+      upY: camera.up.y,
+      upZ: camera.up.z,
+      lookAtX: controls.target.x,
+      lookAtY: controls.target.y,
+      lookAtZ: controls.target.z,
+      targetX: controls.target.x,
+      targetY: controls.target.y,
+      targetZ: controls.target.z,
+      zoom: camera.zoom
+    },
+    end: {
+      x: endX,
+      y: endY,
+      z: endZ,
+      r: endRadius,
+      theta: Math.acos(endZ / endRadius),
+      phi: Math.atan2(endY, endX),
+      upX: endUpX,
+      upY: endUpY,
+      upZ: endUpZ,
+      lookAtX: aim.x,
+      lookAtY: aim.y,
+      lookAtZ: aim.z,
+      targetX: aim.x,
+      targetY: aim.y,
+      targetZ: aim.z,
+      zoom: 1
+    }
+  };
+
+  TweenLite.to(target, tweenTime, {
+    progress: 1,
+    ease: Power3.easeInOut,
+    onUpdate: function (tween) {
+      var r = tween.target.start.r + tween.target.progress * (tween.target.end.r - tween.target.start.r);
+      var theta = tween.target.start.theta + tween.target.progress * (tween.target.end.theta - tween.target.start.theta);
+      var phi = tween.target.start.phi + tween.target.progress * (tween.target.end.phi - tween.target.start.phi);
+      var zoom = tween.target.start.zoom + tween.target.progress * (tween.target.end.zoom - tween.target.start.zoom);
+      var x = r * Math.sin(theta) * Math.cos(phi);
+      var y = r * Math.sin(theta) * Math.sin(phi);
+      var z = r * Math.cos(theta);
+      var upX = tween.target.start.upX + tween.target.progress * (tween.target.end.upX - tween.target.start.upX);
+      var upY = tween.target.start.upY + tween.target.progress * (tween.target.end.upY - tween.target.start.upY);
+      var upZ = tween.target.start.upZ + tween.target.progress * (tween.target.end.upZ - tween.target.start.upZ);
+      var lookAtX = tween.target.start.lookAtX + tween.target.progress * (tween.target.end.lookAtX - tween.target.start.lookAtX);
+      var lookAtY = tween.target.start.lookAtY + tween.target.progress * (tween.target.end.lookAtY - tween.target.start.lookAtY);
+      var lookAtZ = tween.target.start.lookAtZ + tween.target.progress * (tween.target.end.lookAtZ - tween.target.start.lookAtZ);
+      var targetX = tween.target.start.targetX + tween.target.progress * (tween.target.end.targetX - tween.target.start.targetX);
+      var targetY = tween.target.start.targetY + tween.target.progress * (tween.target.end.targetY - tween.target.start.targetY);
+      var targetZ = tween.target.start.targetZ + tween.target.progress * (tween.target.end.targetZ - tween.target.start.targetZ);
+
+      camera.position.set(x, y, z);
+      camera.zoom = zoom;
+      camera.up.set(upX, upY, upZ);
+      camera.lookAt(new THREE.Vector3(lookAtX, lookAtY, lookAtZ));
+      camera.updateProjectionMatrix();
+
+      controls.target = new THREE.Vector3(targetX, targetY, targetZ);
+    },
+    onUpdateParams: ["{self}"],
+    onComplete: function () {
+      camera.position.set(endX, endY, endZ);
+      camera.zoom = 1;
+      camera.up.set(endUpX, endUpY, endUpZ);
+      camera.lookAt(aim);
+      camera.updateProjectionMatrix();
+
+      controls.target = aim;
+    }
+  });
+}
+
+var data;
+
+function init(os_data_in) {
+
+  // set global variable
+  os_data = os_data_in;
+
+  var css = document.head.appendChild(document.createElement('style'));
+  css.innerHTML = 'body { font:600 12pt monospace; margin:0; overflow:hidden; }';
+
+  // Heads Up
+  headsUp = document.body.appendChild(document.createElement('div'));
+  headsUp.setAttribute('id', 'heads-up');
+
+  // Color Bar
+  colorBarHeight = 40;
+  colorBarWidth = 256;
+  colorBar = document.createElement('canvas');
+  colorBar.setAttribute('id', 'color-bar');
+  colorBar.setAttribute('height', colorBarHeight);
+  colorBar.setAttribute('width', colorBarWidth);
+
+  document.documentElement.setAttribute('ondrop', 'drop(event)');
+  document.documentElement.setAttribute('ondragover', 'allowDrop(event)');
+
+  var top = getFloatFromLocalStorage('colorBarTop', 0);
+  var left = getFloatFromLocalStorage('colorBarLeft', 0);
+  colorBarContainer = document.body.appendChild(document.createElement('div'));
+  colorBarContainer.setAttribute('id', 'color-bar-container');
+  colorBarContainer.setAttribute('draggable', 'true');
+  colorBarContainer.setAttribute('ondragstart', 'drag(event)');
+  colorBarContainer.style.height = (colorBarHeight + 112) + 'px';
+  colorBarContainer.style.width = (colorBarWidth + 42) + 'px';
+  colorBarContainer.style.top = top + 'px';
+  colorBarContainer.style.left = left + 'px';
+  if (settings.rotateColorBar) colorBarContainer.classList.add('rotate');
+  colorBarContainer.appendChild(colorBar);
+
+  var bar = document.createElement('div');
+  bar.classList.add('color-bar-tick');
+  bar.style.bottom = (colorBarHeight + 21) + 'px';
+  bar.style.left = 20 + 'px';
+  colorBarContainer.appendChild(bar);
+  bar = bar.cloneNode();
+  bar.style.left = 20 + colorBarWidth + 'px';
+  colorBarContainer.appendChild(bar);
+  bar = bar.cloneNode();
+  bar.setAttribute('id', 'color-bar-selection-line');
+  bar.style.display = 'none';
+  bar.style.bottom = '20px';
+  bar.style.height = '56px';
+  colorBarContainer.appendChild(bar);
+
+  var text = document.createElement('span');
+  text.classList.add('color-bar-text');
+  text.setAttribute('id', 'color-bar-min');
+  text.style.bottom = (colorBarHeight + 30) + 'px';
+  text.style.left = 10 + 'px';
+  colorBarContainer.appendChild(text);
+  text = text.cloneNode();
+  text.setAttribute('id', 'color-bar-max');
+  text.style.left = 10 + colorBarWidth + 'px';
+  colorBarContainer.appendChild(text);
+  text = text.cloneNode();
+  text.setAttribute('id', 'color-bar-selection-text');
+  colorBarContainer.appendChild(text);
+
+  renderer = new THREE.WebGLRenderer({
+    alpha: 1,
+    antialias: true,
+    clearColor: 0xffffff
+  });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.soft = true;
+  document.body.appendChild(renderer.domElement);
+
+  scene = new THREE.Scene();
+
+  var aspect = window.innerWidth / window.innerHeight;
+  orthographicCamera = new THREE.OrthographicCamera( 4*aspect*os_data.metadata.boundingBox.lookAtR / - 2, 4*aspect*os_data.metadata.boundingBox.lookAtR / 2, 4*os_data.metadata.boundingBox.lookAtR / 2, 4*os_data.metadata.boundingBox.lookAtR / - 2, 1, 5000 );
+  scene.add(orthographicCamera); // for light to follow
+  orthographicCamera.up.set(0,1,0);
+  orthographicCamera.lookAt(cameraLookAt());
+
+  perspectiveCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000);
+  scene.add(perspectiveCamera); // for light to follow
+  perspectiveCamera.up.set(0,1,0);
+  perspectiveCamera.lookAt(cameraLookAt());
+
+  // Controls
+  orthographicControls = new OrbitControls(orthographicCamera, renderer.domElement);
+  orthographicControls.minDistance = 10;
+  orthographicControls.maxDistance = 1000;
+  orthographicControls.enabled = true;
+  orthographicControls.addEventListener('change', requestRenderIfNotRequested);
+
+  perspectiveControls = new OrbitControls(perspectiveCamera, renderer.domElement);
+  perspectiveControls.minDistance = 10;
+  perspectiveControls.maxDistance = 1000;
+  perspectiveControls.enabled = true;
+  perspectiveControls.addEventListener('change', requestRenderIfNotRequested);
+
+  // initialize camera and controls
+  setAllCameraAngles(-30, 30, 0);
+
+  // Lights
+  light = new THREE.AmbientLight(0xbbbbbb);
+  scene.add(light);
+
+  // Axes, adapted from AxisHelper.js
+  var axisSize = cameraRadius();
+
+  var xAxisMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+  let xAxisGeometry = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(axisSize, 0, 0)
+  ]);
+  scene.add( new THREE.Line( xAxisGeometry, xAxisMaterial ) );
+
+  var yAxisMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+  var yAxisGeometry = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(0, 0, -axisSize)
+  ]);
+  scene.add( new THREE.Line( yAxisGeometry, yAxisMaterial ) );
+
+  var zAxisMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
+  var zAxisGeometry = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(0, axisSize, 0)
+  ]);
+  scene.add( new THREE.Line( zAxisGeometry, zAxisMaterial ) );
+
+  if (os_data.metadata.northAxis != 0) {
+    northAxisRad = -os_data.metadata.northAxis * Math.PI / 180.0;
+    var northAxisMaterial = new THREE.LineBasicMaterial({ color: 0xff9933, linewidth: 2 });
+    var northAxisGeometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0,0,0),
+      new THREE.Vector3(-Math.sin(northAxisRad)*axisSize,0,-Math.cos(northAxisRad)*axisSize)
+    ]);
+    scene.add( new THREE.Line( northAxisGeometry, northAxisMaterial ) );
+  }
+  // scene
+  project = new THREE.Object3D();
+  scene.add(project);
+
+  // var loader = new THREE.ObjectLoader();
+  // data = loader.parse(os_data);
+
+  const loader = new GLTFLoader();
+  // var data = loader.parse(os_data);
+  loader.load('./model.gltf', function ( gltf ) {
+
+    data = gltf;
+
+    project.add(data.scene.children[0]);
+
+    // scene_objects is an array of THREE.Mesh where each mesh is a real OpenStudio object
+    scene_objects = project.children[0].children;
+
+    // temp is a map of OpenStudio handle to scene object
+    var temp = {};
+    scene_objects.forEach(function(object) {
+      temp[object.userData.handle] = object;
+    });
+
+    // coincident_objects store references between adjacent objects that are truly coincident, meaning that their vertices are completely the same
+    // when an object's coincident object is visible we do not want to show the back object
+    coincident_objects = {};
+    scene_objects.forEach(function(object) {
+      if (object.userData.coincidentWithOutsideObject){
+        coincident_objects[object.uuid] = temp[object.userData.outsideBoundaryConditionObjectHandle];
+      }
+    });
+
+    // back_objects are copies of scene_objects that exist only so we can color their back sides
+    scene_edges = [];
+    back_objects = {};
+    object_edges = {};
+    scene_objects.forEach(function(object) {
+      var edges = new THREE.LineSegments( new THREE.EdgesGeometry( object.geometry ), new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+      scene.add(edges);
+      var edge = scene.children[scene.children.length-1];
+      scene_edges.push(edge);
+      object_edges[object.uuid] = edge;
+
+      var back_object = object.clone();
+      back_object.visible = false;
+      back_object.name = back_object.name + ' Back';
+      scene.add(back_object);
+      back_object = scene.children[scene.children.length-1];
+      back_object.geometry = object.geometry.clone();
+      back_objects[object.uuid] = back_object;
+    });
+
+    // show look at point
+    //var sg = new THREE.SphereGeometry( 1, 32, 32 );
+    //var sm = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+    //var s = new THREE.Mesh( sg, sm );
+    //scene.add( s );
+    //s.position.set(cameraLookAt().x, cameraLookAt().y, cameraLookAt().z);
+
+    raycaster = new THREE.Raycaster();
+    mouse = new THREE.Vector2();
+
+    selected_material = new THREE.MeshPhongMaterial({
+      name: 'Selected',
+      color: 0xffff00,
+      specular: 0xffff00,
+      emissive: 0xffff00,
+      shininess: 50,
+      side: THREE.DoubleSide
+    });
+
+    unknown_material = new THREE.MeshPhongMaterial({
+      name: 'Unknown',
+      color: 0xffffff,
+      specular: 0xffffff,
+      emissive: 0xffffff,
+      shininess: 50,
+      side: THREE.DoubleSide
+    });
+
+    dot_material = new THREE.PointsMaterial( { size: 10, sizeAttenuation: false, color: 0xff0000 } );
+
+    materials = parseMaterials(os_data.materials);
+
+  });
+
+  renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
+  renderer.domElement.addEventListener('click', onDocumentMouseClick, false);
+}
+
+function setSelectedMaterial(object) {
+  //console.log("Selecting " + object.name);
+
+  object.wasVisible = object.visible;
+  object.lastMaterial = object.material;
+  object.visible = true;
+  object.material = selected_material;
+  object.material.needsUpdate = true;
+}
+
+function removeMaterial(object) {
+  //console.log("Removing material from " + object.name);
+
+  object.wasVisible = object.visible;
+  object.lastMaterial = object.material;
+  object.visible = false;
+  object.material = null;
+}
+
+function restoreLastMaterial(object) {
+  //console.log("Restoring last material to " + object.name);
+
+  object.visible = object.wasVisible;
+  object.material = object.lastMaterial;
+  if (object.material){
+    object.material.needsUpdate = true;
+  }
+  object.lastMaterial = null;
+}
+
+/**
+ * selects one or several objects (if objects is an array)
+ *
+ * @param object a single object or an array of objects to select
+ */
+function selectObject(object) {
+  const renderBy = settings.renderBy;
+  const isData = (renderBy === 'Data');
+  const selected = Array.isArray(object) ? [...object] : object ? [object] : [];
+
+  /**
+   * computes symmetric difference between 2 arrays
+   *
+   * @param newObjects
+   * @returns {boolean} if intersected and newObjects don't contain the same elements
+   */
+  function alreadyIntersected(newObjects) {
+    return intersected
+      .filter(x => !newObjects.includes(x))
+      .concat(newObjects.filter(x => !intersected.includes(x))).length === 0;
+  }
+
+  if (!alreadyIntersected(selected)) {
+    // restore material on currently selected
+    intersected.forEach(i => {
+      const edges = object_edges[i.uuid];
+      if (edges) {
+        edges.material.color.setRGB(0, 0, 0);
+        edges.material.linewidth = 1;
+        edges.material.needsUpdate = true;
+      }
+      if (!isData && i) {
+        restoreLastMaterial(i);
+        const coincident_intersected = coincident_objects[i.uuid];
+        if (coincident_intersected) {
+          restoreLastMaterial(coincident_intersected);
+        }
+        const back_intersected = back_objects[i.uuid];
+        if (back_intersected) {
+          restoreLastMaterial(back_intersected);
+        }
+      }
+    });
+
+    // set the new intersected objects
+    intersected = selected;
+
+    // save last material and set new one
+    intersected.forEach(i => {
+      const edges = object_edges[i.uuid];
+      if (edges) {
+        edges.material.color.setRGB(252, 219, 57);
+        edges.material.linewidth = 4;
+        edges.material.needsUpdate = true;
+      }
+      if (!isData && i) {
+        setSelectedMaterial(i);
+        const coincident_intersected = coincident_objects[i.uuid];
+        if (coincident_intersected) {
+          removeMaterial(coincident_intersected);
+        }
+        const back_intersected = back_objects[i.uuid];
+        if (back_intersected) {
+          removeMaterial(back_intersected);
+        }
+      }
+    });
+    if (isData && intersected.length > 0) {
+      update();
+    }
+  }
+}
+
+function onDocumentMouseDown(event) {
+  mouseDownX = event.clientX;
+  mouseDownY = event.clientY;
+}
+function onDocumentMouseClick(event) {
+  // Only act on the mouse click if it was an actual click, not a drag to orbit the camera
+  if (mouseDownX == event.clientX && mouseDownY == event.clientY) {
+    mouse.x = (event.clientX / renderer.domElement.width) * 2 - 1;
+    mouse.y = -(event.clientY / renderer.domElement.height) * 2 + 1;
+
+    if (settings.orthographic){
+      raycaster.setFromCamera(mouse, orthographicCamera);
+    }else{
+      raycaster.setFromCamera(mouse, perspectiveCamera);
+    }
+
+    // raycaster intersects invisible objects so filter first
+    var pickable = scene_objects.filter(function(x){return x.visible;});
+    intersects = raycaster.intersectObjects(pickable);
+    if (intersects.length) {
+
+      selectObject(intersects[0].object);
+      displaySelectedObjectDetails();
+
+    } else {
+      removeSelection();
+    }
+    requestRenderIfNotRequested();
+  }
+}
+
+function displaySelectedObjectDetails() {
+
+  headsUp.style.left = 10 + 0.5 * window.innerWidth + mouse.x * 0.5 * window.innerWidth + 'px';
+  headsUp.style.top = -10 + 0.5 * window.innerHeight - mouse.y * 0.5 * window.innerHeight + 'px';
+  headsUp.style.display = 'block';
+  document.getElementById('color-bar-selection-line').style.display = 'block';
+  document.getElementById('color-bar-selection-text').style.display = 'inline-block';
+
+  let txt = '';
+  let nbDisplayedTiles = 0, maxTiles = 1;
+  intersected.some(inter => {
+    txt += '<p>Name: ' + inter.userData.name    + '<br>';
+    // render details depending on chosen renderBy value
+    switch (settings.renderBy) {
+      case "Surface Type":
+        txt += 'Surface Type: ' + inter.userData.surfaceType + '<br>';
+        if (inter.userData.spaceName){
+          txt += 'Space Name: ' + inter.userData.spaceName;
+        }
+        break;
+      case "Normal":
+        txt += 'Surface Type: ' + inter.userData.surfaceType + '<br>'
+        if (inter.userData.spaceName){
+          txt += 'Space Name: ' + inter.userData.spaceName;
+        }
+        break;
+      case "Boundary":
+        if (inter.userData.outsideBoundaryCondition){
+          txt += 'Outside Boundary Condition: ' + inter.userData.outsideBoundaryCondition + '<br>';
+        }
+        txt += 'Sun Exposure: ' + inter.userData.sunExposure + '<br>';
+        txt += 'Wind Exposure: ' + inter.userData.windExposure;
+        break;
+      case "Construction":
+        if (inter.userData.constructionName){
+          txt += 'Construction Name: ' + inter.userData.constructionName;
+        }
+        break;
+      case "Thermal Zone":
+        if (inter.userData.thermalZoneName){
+          txt += 'Thermal Zone: ' + inter.userData.thermalZoneName;
+        }
+        break;
+      case "Space Type":
+        if (inter.userData.spaceTypeName){
+          txt += 'Space Type: ' + inter.userData.spaceTypeName;
+        }
+        break;
+      case "Building Story":
+        if (inter.userData.buildingStoryName){
+          txt += 'Story Name: ' + inter.userData.buildingStoryName;
+        }
+        break;
+      case "Data":
+        // in javascript (0 == '' == false)
+        if (inter.userData.variableValue !== '') {
+          txt += 'Variable: <span id="balloon-variable-name">' + inter.userData.variableName + '</span><br>';
+          txt += 'Key: <span id="balloon-variable-key-name">' + inter.userData.variableKeyName + '</span><br>';
+          txt += 'Date: <span id="balloon-variable-date">' + inter.userData.variableDate + '</span><br>';
+          txt += 'Time: <span id="balloon-variable-time">' + inter.userData.variableTime + '</span><br>';
+          txt += 'Value: <span id="balloon-variable-value">' + inter.userData.variableValue + '</span> ' + inter.userData.variableUnits;
+        }
+        updateColorBarSelection(inter.userData.variableValue);
+        break;
+    }
+    txt += "</p>";
+    nbDisplayedTiles += 1;
+    return nbDisplayedTiles >= maxTiles;
+  });
+  if (nbDisplayedTiles < intersected.length) {
+    txt += `<p>Not all matching objects details displayed (max: ${maxTiles})</p>`;
+  }
+  headsUp.innerHTML = txt;
+  document.body.style.cursor = 'pointer';
+}
+
+var renderRequested = false;
+
+function animate() {
+  renderRequested = undefined;
+  orthographicControls.update();
+  perspectiveControls.update();
+  if (settings.orthographic){
+    renderer.render(scene, orthographicCamera);
+  }else{
+    renderer.render(scene, perspectiveCamera);
+  }
+}
+
+function requestRenderIfNotRequested() {
+  if (!renderRequested) {
+    renderRequested = true;
+    requestAnimationFrame(animate);
+  }
+}
+
+function erf(x) {
+  // constants
+  var a1 =  0.254829592;
+  var a2 = -0.284496736;
+  var a3 =  1.421413741;
+  var a4 = -1.453152027;
+  var a5 =  1.061405429;
+  var p  =  0.3275911;
+
+  // Save the sign of x
+  var sign = 1;
+  if (x < 0) {
+    sign = -1;
+  }
+  x = Math.abs(x);
+
+  // A&S formula 7.1.26
+  var t = 1.0/(1.0 + p*x);
+  var y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*Math.exp(-x*x);
+
+  return sign*y;
+}
+
+var updateColorBar = function() {
+  var ctx = colorBar.getContext('2d');
+  var colorBarData = ctx.createImageData(colorBarWidth, colorBarHeight);
+  var colorBarRow = [];
+  for (var i = 0; i < colorBarWidth; i++) {
+    var pixel = getColor(i, 0, colorBarWidth - 1, settings.colorScheme);
+    colorBarRow[i*4]   = pixel.r * 255;
+    colorBarRow[i*4+1] = pixel.g * 255;
+    colorBarRow[i*4+2] = pixel.b * 255;
+    colorBarRow[i*4+3] = 255;
+  }
+  for (var i = 0; i < colorBarData.data.length; i++) {
+    colorBarData.data[i] = colorBarRow[i % (colorBarWidth*4)];
+  }
+  ctx.putImageData(colorBarData, 0, 0);
+
+  document.getElementById('color-bar-min').innerHTML = Math.round(variable.valueMin * 100) / 100;
+  document.getElementById('color-bar-max').innerHTML = Math.round(variable.valueMax * 100) / 100;
+};
+function cycleHour() {
+  if (settings.cycleHour) {
+    settings.hourSlider = settings.hourSlider % 24 + 1;
+    update();
+    setTimeout(cycleHour, 1000 / settings.cycleSpeed);
+  }
+}
+
+var adjacencyIssueIds = new Set();
+var adjacencyIssueVertices = new Set();
+var updateAdjacencyIssues = function(value) {
+  Array.groupBy = function(arr, prop) {
+      return arr.reduce(function(groups, item) {
+          const val = prop.split('.')
+              .reduce((obj, key) => (obj && obj[key] !== 'undefined') ? obj[key] : undefined, item);
+          groups[val] = groups[val] || [];
+          groups[val].push(item);
+          return groups;
+      }, {});
+  }
+
+  function combinations(a, b) {
+      if (b === undefined) {
+          return a.flatMap((v, i) => a.slice(i).map(w => [v, w]));
+      } else {
+          return a.flatMap((v, i) => b.map(w => [v, w]));
+      }
+  }
+
+  // As of now Three.js revision 71
+  class Box3 extends THREE.Box3 {
+
+      // Added in revision 84
+      expandByObject(object) {
+          const box = new THREE.Box3();
+          box.setFromObject(object);
+          this.expandByPoint(box.min);
+          this.expandByPoint(box.max);
+      }
+
+      // Added in revision 74
+      intersectsBox(box) {
+          // using 6 splitting planes to rule out intersections.
+          return box.max.x < this.min.x || box.min.x > this.max.x ||
+              box.max.y < this.min.y || box.min.y > this.max.y ||
+              box.max.z < this.min.z || box.min.z > this.max.z ? false : true;
+      }
+  }
+
+  const detectable = scene_objects.filter(o =>
+      ["Wall", "RoofCeiling", "Floor"].includes(o.userData.surfaceTypeMaterialName))
+  const per_space = Array.groupBy(detectable, 'userData.spaceName')
+  const space_boxes = Object.entries(per_space).map(([space, objects]) => {
+      const box = new Box3();
+      box.space = space;
+      box.surfaces = objects;
+      objects.forEach(o => box.expandByObject(o));
+      box.expandByScalar(0.5);
+      return box;
+  });
+
+  /*
+    * Implements part of Honeybee's SolveAdj tool licensed under the AGPL 3.0. See:
+    * - https://github.com/ladybug-tools/honeybee-grasshopper-core/blob/27773fe0097188d4be0e160c71a0cda2c54c6f73/honeybee_grasshopper_core/src/HB%20Solve%20Adjacency.py#L190
+    * - https://github.com/ladybug-tools/honeybee-core/blob/ae4e905a78635a7448291ff8dbe94aa2f627a1ae/honeybee/room.py#L925
+    * - https://github.com/ladybug-tools/honeybee-core/blob/ae4e905a78635a7448291ff8dbe94aa2f627a1ae/honeybee/room.py#L867
+    * - https://github.com/ladybug-tools/ladybug-geometry/blob/da34f3397c59bc311004cb6319d534953c8ee9ab/ladybug_geometry/geometry3d/polyface.py#L689
+    */
+  const almost_equal = 1e-6;
+  const thresh = (parseFloat(settings.findAdjacencyThreshold)**2)/10000;
+  adjacencyIssueIds.clear();
+  adjacencyIssueVertices.clear();
+
+  // issues within space
+  space_boxes.forEach(a => {
+    for (var [p, q] of combinations(a.surfaces)) {
+      for (var [x, y] of combinations(p.geometry.vertices, q.geometry.vertices)) {
+        const dist = x.distanceToSquared(y);
+        if (almost_equal < dist && dist < thresh) {
+          adjacencyIssueIds.add(p.id).add(q.id);
+          adjacencyIssueVertices.add(x).add(y);
+        }
+      }
+    }
+  })
+
+  // issues between spaces
+  for (var [a, b] of combinations(space_boxes)) {
+    if (a.intersectsBox(b)) {
+      for (var [p, q] of combinations(a.surfaces, b.surfaces)) {
+        for (var [x, y] of combinations(p.geometry.vertices, q.geometry.vertices)) {
+          const dist = x.distanceToSquared(y);
+          if (almost_equal < dist && dist < thresh) {
+            adjacencyIssueIds.add(p.id).add(q.id);
+            adjacencyIssueVertices.add(x).add(y);
+          }
+        }
+      }
+    }
+  }
+}
+
+var gui = null;
+var dataFolder = null;
+var update = function (value) {
+  var renderBy = settings.renderBy;
+  var searchedName = settings.searchName;
+  var isData = (renderBy === 'Data');
+  if (isData && !dataFolder){
+    variable_names = [];
+    os_data.variables.forEach(function(os_data_var) {
+      variable_names.push(os_data_var.name);
+    });
+    variable = os_data.variables[0];
+    settings.variableName = variable.name;
+
+    dataFolder = gui.addFolder('Data Rendering');
+    dataFolder.add(settings, 'variableName', variable_names).name('Variable').onChange(updateVariable);
+    dataFolder.add(settings, 'colorScheme', {'Grayscale': 'grayscale', 'Sequential': 'sequential', 'Diverging': 'diverging', 'Rainbow': 'rainbow'}).name('Color Scheme').onChange(function(value) {
+      setLocalStorage('colorScheme', value);
+      updateColorBar();
+      update(value);
+    });
+    dataFolder.add(settings, 'daySlider', 0, variable.numDays-1, 1).name('Day').onChange(update);
+    dataFolder.add(settings, 'hourSlider', variable.hoursPerInterval, 24).step(variable.hoursPerInterval).name('Hour').listen().onChange(update);
+    dateTimeControl = dataFolder.add(settings, 'dateTime').name('Date Time').listen();
+    dataFolder.add(settings, 'rotateColorBar').name('Rotate Color Bar').onChange(function(value) {
+      if (value) {
+        colorBarContainer.classList.add('rotate');
+      } else {
+        colorBarContainer.classList.remove('rotate');
+      }
+      fitInWindow();
+      setLocalStorage('rotateColorBar', value);
+    });
+    dataFolder.add(settings, 'cycleHour').name('Cycle Hour').onChange(function(cycleHourValue) {
+      if (cycleHourValue) {
+        cycleHour();
+      }
+    });
+    dataFolder.add(settings, 'cycleSpeed', 1, 10).name('Cycle Speed').onChange(function(value) {
+      setLocalStorage('cycleSpeed', value);
+    });
+    dataFolder.open();
+    document.getElementById('color-bar-container').style.display = 'block';
+    fitInWindow();
+    updateColorBar();
+  } else if (!isData && dataFolder) {
+    gui.removeFolder('Data Rendering');
+    dataFolder = null;
+    if (settings.cycleHour) {
+      settings.cycleHour = false;
+    }
+    document.getElementById('color-bar-container').style.display = 'none';
+  }
+
+  var i = null;
+  var date = '';
+  var time = '';
+  var units = '';
+  if (isData && variable){
+    i = Math.floor(variable.intervalsPerDay*Math.floor(settings.daySlider) + variable.intervalsPerHour*Math.floor(settings.hourSlider)) - 1;
+    t = os_data.times[variable.timeIndex][i];
+    var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+    d.setUTCSeconds(t);
+
+    date = ('0' + (d.getUTCMonth()+1)).slice(-2) + '/' + ('0'+d.getUTCDate()).slice(-2);
+    time = ('0' + d.getUTCHours()).slice(-2) + ':' + ('0'+d.getUTCMinutes()).slice(-2);
+
+    settings.dateTime = date + ' - ' + time;
+    dateTimeControl.updateDisplay();
+
+    if (variable.units.length) {
+      units = '(' + variable.units + ')';
+    }
+  }
+
+  function lowerOrEmpty(text) {
+    return text?.toLowerCase() || '';
+  }
+
+  const lcSearchedName = searchedName.toLowerCase();
+
+  scene_objects.forEach(function(object) {
+
+    var surfaceType = object.userData.surfaceType;
+
+    object.visible = true;
+
+    if (settings.findAdjacencyIssues) {
+      object.visible = adjacencyIssueIds.has(object.id);
+    }
+
+    if (settings.showStory !== 'All Stories' && settings.showStory !== object.userData.buildingStoryName) {
+      object.visible = false;
+    }
+    if ((settings.showAirLoop !== 'All Loops' && !object.userData.airLoopHVACNames.includes(settings.showAirLoop))
+        &&
+        (settings.showAirLoop !== 'No Loop' || object.userData.airLoopHVACNames.length !== 0)) {
+      object.visible = false;
+    }
+
+    // select objects with surface, space or thermal zone names matching 'Search By Name' input value
+    if (searchedName !== '') {
+      const surfaceName = lowerOrEmpty(object.userData.name);
+      const spaceName = lowerOrEmpty(object.userData.spaceName);
+      switch (settings.searchType) {
+        case "Surfaces":
+          object.visible = surfaceName.indexOf(lcSearchedName) >= 0;
+          break;
+        case "Spaces and Groups":
+          object.visible = spaceName.indexOf(lcSearchedName) >= 0;
+          break;
+      }
+    }
+
+    if (!settings.showFloors && surfaceType == 'Floor'){
+      object.visible = false;
+    }else if (!settings.showWalls && surfaceType == 'Wall'){
+      object.visible = false;
+    }else if (!settings.showRoofCeilings && surfaceType == 'RoofCeiling'){
+      object.visible = false;
+    }else if (!settings.showWindows && surfaceType.indexOf('Window') > -1){
+      object.visible = false;
+    }else if (!settings.showWindows && surfaceType.indexOf('GlassDoor') > -1){
+      // hide these with doors
+      //object.visible = false;
+    }else if (!settings.showWindows && surfaceType.indexOf('Skylight') > -1){
+      object.visible = false;
+    }else if (!settings.showWindows && surfaceType.indexOf('TubularDaylight') > -1){
+      object.visible = false;
+    }else if (!settings.showDoors && surfaceType.indexOf('Door') > -1){
+      object.visible = false;
+    }else if (!settings.showShading && (surfaceType.indexOf('Shading') > -1)){
+      object.visible = false;
+    }else if (!settings.showPartitions && (surfaceType == 'InteriorPartitionSurface')){
+      object.visible = false;
+    }
+
+    var material = null;
+    var material_double_sided = null;
+    var material_back = null;
+    switch (renderBy) {
+      case "Surface Type":
+        material = materials[object.userData.surfaceTypeMaterialName];
+        material_double_sided = material;
+        if (coincident_objects[object.uuid]){
+          // coincident object present, only show inside face
+          material = materials[object.userData.surfaceTypeMaterialName + '_Int'];
+        }
+        material_back = materials[object.userData.surfaceTypeMaterialName + '_Int'];
+        break;
+      case "Normal":
+        material = materials.NormalMaterial;
+        material_double_sided = material;
+        if (coincident_objects[object.uuid]){
+          // coincident object present, only show inside face
+          material = materials.NormalMaterial_Int;
+        }
+        material_back = materials.NormalMaterial_Int;
+        break;
+      case "Boundary":
+        material = materials[object.userData.boundaryMaterialName];
+        break;
+      case "Construction":
+        material = materials[object.userData.constructionMaterialName];
+        break;
+      case "Thermal Zone":
+        material = materials[object.userData.thermalZoneMaterialName];
+        break;
+      case "Space Type":
+        material = materials[object.userData.spaceTypeMaterialName];
+        break;
+      case "Building Story":
+        material = materials[object.userData.buildingStoryMaterialName];
+        break;
+      case "Data":
+        var value = null;
+        var keyName = '';
+        var object_variables = object.userData.variables.filter(function(x){return x.name == settings.variableName;});
+        if (object_variables.length > 0){
+          var object_variable = object_variables[0];
+          if (object_variable.valueIndex !== null){
+            value = variable.values[object_variable.valueIndex][i];
+          }
+          if (object_variable.keyName !== null){
+            keyName = object_variable.keyName;
+          }
+        }
+
+        if (value !== null) {
+          object.userData.variableName = settings.variableName;
+          object.userData.variableDate = date;
+          object.userData.variableTime = time;
+          object.userData.variableKeyName = keyName;
+          object.userData.variableValue = value;
+          object.userData.variableUnits = units;
+        }else{
+          object.userData.variableName = settings.variableName;
+          object.userData.variableDate = date;
+          object.userData.variableTime = time;
+          object.userData.variableKeyName = keyName;
+          object.userData.variableValue = '';
+          object.userData.variableUnits = units;
+        }
+
+        material = new THREE.MeshBasicMaterial({side: THREE.DoubleSide});
+        material.color.set(getColor(value, variable.valueMin, variable.valueMax, settings.colorScheme));
+        break;
+    }
+
+    if (!material) {
+      material = unknown_material;
+    }
+
+    intersected.forEach(i => {
+      updateBalloon(i);
+      updateColorBarSelection(i.userData.variableValue);
+    });
+
+    object.material = material;
+    object.material_double_sided = material_double_sided;
+    if (object.material){
+      object.material.needsUpdate = true;
+    }
+
+    var edge = object_edges[object.uuid];
+    edge.visible = settings.showWireframe || object.visible;
+
+    var back_object = back_objects[object.uuid];
+    if (back_object){
+      back_object.material = material_back;
+      if (back_object.material){
+        back_object.visible = object.visible;
+        back_object.material.needsUpdate = true;
+      }else{
+        back_object.visible = false;
+      }
+    }
+  });
+
+  // turn off back objects where coincident objects are visible
+  scene_objects.forEach(function(object) {
+    if (object.visible){
+      var coincident_object = coincident_objects[object.uuid];
+      if (coincident_object){
+        back_object = back_objects[object.uuid];
+        if (back_object){
+          if (coincident_object.visible){
+            // coincident object is visible, hide back object
+            back_object.visible = false;
+          }else{
+
+            if (back_object.material){
+			  // coincident object is not visible, show back object
+              back_object.visible = true;
+            }
+
+            if (object.material_double_sided){
+              // switch to double sided material so we can select this
+              object.material = object.material_double_sided;
+              object.material.needsUpdate = true;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  if (dot_points instanceof THREE.Points){
+    scene.remove(dot_points);
+    dot_points = null;
+  }
+
+  if (settings.findAdjacencyIssues) {
+    var dot_geometry = new THREE.BufferGeometry();
+    dot_points = new THREE.Points(dot_geometry, dot_material);
+
+    adjacencyIssueVertices.forEach(function(p) {
+      dot_geometry.vertices.push(p);
+    });
+
+    dot_geometry.verticesNeedUpdate = true;
+    dot_geometry.elementsNeedUpdate = true;
+    dot_geometry.computeVertexNormals();
+    scene.add(dot_points);
+  }
+
+  requestRenderIfNotRequested();
+};
+
+var updateVariable = function (variableName) {
+  var variables = os_data.variables.filter(function(x){return x.name == variableName;});
+  if (variables.length){
+    variable = variables[0];
+  }
+  updateColorBar();
+  update();
+};
+
+var initDatGui = function () {
+  var has_data = (os_data.metadata.variables && os_data.metadata.variables.length);
+
+  dat.GUI.prototype.removeFolder = function(name) {
+    this.__folders[name].close();
+    this.__folders[name].domElement.parentNode.parentNode.removeChild(this.__folders[name].domElement.parentNode);
+    this.__folders[name] = undefined;
+    this.onResize();
+  };
+
+  gui = new dat.GUI();
+  var render_modes = ['Surface Type', 'Normal', 'Boundary', 'Construction', 'Thermal Zone', 'Space Type', 'Building Story'];
+  if (has_data){
+    render_modes.push('Data');
+  }
+  gui.add(settings, 'renderBy', render_modes).name('Render By').onChange(function(value) {
+    removeSelection();
+    update(value);
+  });
+
+  var building_story_names = os_data.metadata.buildingStoryNames;
+  building_story_names.unshift('All Stories');
+  gui.add(settings, 'showStory', building_story_names).name('Show Story').onChange(function(value) {
+    removeSelection();
+    update(value);
+  });
+
+  var air_loop_names = os_data.metadata
+    .modelObjectMetadata
+    .filter(objMetaData => objMetaData.iddObjectType === "OS:AirLoopHVAC")
+    .map(objMetaData => objMetaData.name)
+    .sort();
+  if (air_loop_names && air_loop_names.length > 0) {
+    air_loop_names.unshift("All Loops");
+    air_loop_names.unshift("No Loop");
+    gui.add(settings, 'showAirLoop', air_loop_names).name('Show Air Loop').onChange(function (value) {
+      removeSelection();
+      update(value);
+    });
+  }
+
+  var s1 = gui.addFolder('Search');
+  var search_types = ['Surfaces', 'Spaces and Groups']
+  s1.add(settings, 'searchType', search_types).name('Search Type').onChange(function (value) {
+    removeSelection();
+    setLocalStorage('searchType', value);
+    update(value);
+  });
+  s1.add(settings, 'searchName', "").name('Search Name').onChange(function (value) {
+    removeSelection();
+    setLocalStorage('searchName', value);
+    update(value);
+  });
+  s1.open();
+
+  var f1 = gui.addFolder('Surface Filters');
+  f1.add(settings, 'showFloors').name('Show Floors').onChange(function(value) {
+    removeSelection();
+    setLocalStorage('showFloors', value);
+    update(value);
+  });
+  f1.add(settings, 'showWalls').name('Show Walls').onChange(function(value) {
+    removeSelection();
+    setLocalStorage('showWalls', value);
+    update(value);
+  });
+  f1.add(settings, 'showRoofCeilings').name('Show Roofs').onChange(function(value) {
+    removeSelection();
+    setLocalStorage('showRoofCeilings', value);
+    update(value);
+  });
+  f1.add(settings, 'showWindows').name('Show Windows').onChange(function(value) {
+    removeSelection();
+    setLocalStorage('showWindows', value);
+    update(value);
+  });
+  f1.add(settings, 'showDoors').name('Show Doors').onChange(function(value) {
+    removeSelection();
+    setLocalStorage('showDoors', value);
+    update(value);
+  });
+  f1.add(settings, 'showShading').name('Show Shading').onChange(function(value) {
+    removeSelection();
+    setLocalStorage('showShading', value);
+    update(value);
+  });
+  f1.add(settings, 'showPartitions').name('Show Partitions').onChange(function(value) {
+    removeSelection();
+    setLocalStorage('showPartitions', value);
+    update(value);
+  });
+  f1.add(settings, 'showWireframe').name('Show Wireframe').onChange(function(value) {
+    removeSelection();
+    setLocalStorage('showWireframe', value);
+    update(value);
+  });
+  f1.open();
+
+  var f2 = gui.addFolder('Potential Adjacency Issues');
+  f2.add(settings, 'findAdjacencyIssues').name('Enable').onChange(value => {
+      removeSelection();
+      setLocalStorage('findAdjacencyThreshold', value);
+      updateAdjacencyIssues();
+      update(value);
+  });
+  f2.add(settings, 'findAdjacencyThreshold', 0.1, 10, 0.5).name('Threshold').onFinishChange(function (value) {
+      if (settings.findAdjacencyIssues) {
+          removeSelection();
+          setLocalStorage('findAdjacencyThreshold', value);
+          updateAdjacencyIssues();
+          update(value);
+      }
+  });
+  f2.open();
+
+  var f3 = gui.addFolder('Camera');
+  [
+    ["orthographic", "Orthographic"],
+    ["xView", "X View"],
+    ["yView", "Y View"],
+    ["zView", "Z View"],
+    ["reset", "Reset"]
+  ].forEach(opt => {
+    f3.add(settings, opt[0]).name(opt[1]).onChange(function (value) {
+      if (opt[0] === "orthographic")
+        setLocalStorage(opt[0], value);
+      update(value);
+    });
+  });
+  f3.open();
+
+  /*var f2 = gui.addFolder('Section Cut');
+  f2.add(settings, 'xSection', 0, 360).name('X Section').onChange(function (value) {
+    console.log('X cut: ' + value);
+  });
+  f2.add(settings, 'ySection', 0, 360).name('Y Section').onChange(function (value) {
+    console.log('Y cut: ' + value);
+  });
+  f2.add(settings, 'zSection', 0, 360).name('Z Section').onChange(function (value) {
+    console.log('Z cut: ' + value);
+  });
+  f2.open();*/
+
+  update();
+};
+
+
+// import data from './data.json' assert { type: 'JSON' };
+var depdata =  fetch("data.json").then((data) => {
+    return data.json();
+});
+
+depdata.then(function(data) {
+  console.log(data)
+  init(data);
+  animate();
+  initDatGui();
+});
+
+</script>
+</body>
+</html>
