@@ -130,11 +130,13 @@ class Surface:
     @staticmethod
     def Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=0.0, max_z=0.0) -> Surface:
         """Factory method to easily create a rectangular Surface, with ULC convention."""
-        if (abs(max_z - min_z) < 0.01):
+        if abs(max_z - min_z) < 0.01:
             z = min_z
-            if (abs(z) < 0.01):
-                print("Looks like you're trying to create a Floor surface... "
-                      "use the Surface.Floor factory method if that's the case so outwardNormal points down.")
+            if abs(z) < 0.01:
+                print(
+                    "Looks like you're trying to create a Floor surface... "
+                    "use the Surface.Floor factory method if that's the case so outwardNormal points down."
+                )
 
             vertices_arr = np.array(
                 [
@@ -144,7 +146,7 @@ class Surface:
                     [max_x, max_y, z],  # Upper Right Corner
                 ]
             )
-        elif (abs(max_x - min_x) < 0.01):
+        elif abs(max_x - min_x) < 0.01:
             x = min_x
             vertices_arr = np.array(
                 [
@@ -155,7 +157,7 @@ class Surface:
                 ]
             )
 
-        elif (abs(max_y - max_y) < 0.01):
+        elif abs(max_y - max_y) < 0.01:
             y = min_y
             vertices_arr = np.array(
                 [

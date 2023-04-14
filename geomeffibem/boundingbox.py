@@ -46,14 +46,11 @@ class BoundingBox:
         )
 
     def centerPoint(self) -> Vertex:
+        """Get center of the bounding box, as the midpoint of the min/max coordinates."""
         if self.minX is None:
             raise ValueError("You need to add some points")
 
-        return Vertex(
-            x=(self.minX + self.maxX) / 2.0,
-            y=(self.minY + self.maxY) / 2.0,
-            z=(self.minZ + self.maxZ) / 2.0
-        )
+        return Vertex(x=(self.minX + self.maxX) / 2.0, y=(self.minY + self.maxY) / 2.0, z=(self.minZ + self.maxZ) / 2.0)
 
     def isEmpty(self) -> bool:
         """Checks if the bounding box is initialized."""
