@@ -133,8 +133,8 @@ class Surface:
         if (abs(max_z - min_z) < 0.01):
             z = min_z
             if (abs(z) < 0.01):
-                print("Looks like you're trying to create a Floor surface... use the Surface.Floor factory method")
-                return Surface.Floor(min_x=min_x, max_x=max_x, min_y=min_y, max_y=max_y, z=z)
+                print("Looks like you're trying to create a Floor surface... "
+                      "use the Surface.Floor factory method if that's the case so outwardNormal points down.")
 
             vertices_arr = np.array(
                 [

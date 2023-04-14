@@ -12,15 +12,16 @@ from geomeffibem.vertex import Vertex
 
 def test_surface_rectangle():
     """Tests Surface.Rectangle factory."""
-    surface = Surface.Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=0.0, max_z=0.0)
+    z = 0.0
+    surface = Surface.Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=z, max_z=z)
     assert np.array_equal(
         surface.to_numpy(),
         np.array(
             [
-                [0.0, 0.0, 0.0],
-                [0.0, 10.0, 0.0],
-                [10.0, 10.0, 0.0],
-                [10.0, 0.0, 0.0],
+                [0.0, 10.0, z],
+                [0.0, 0.0, z],
+                [10.0, 0.0, z],
+                [10.0, 10.0, z],
             ]
         ),
     )
@@ -137,19 +138,19 @@ def test_Surface_centroid():
 
 def test_Surface_split():
     """Test splitting a surface."""
-    surface = Surface.Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=0.0, max_z=0.0)
+    surface = Surface.Floor(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, z=0.0)
     surface.name = "Surface"
     surface.os_centroid() == Vertex(+5.0000, +5.0000, +0.0000)
 
     s1, s2 = surface.split_into_n_segments(n_segments=2, axis=None, plot=False)
     assert s1.name == "Surface-1"
     assert np.array_equal(
-        s1.to_numpy(), np.array([[0.0, 0.0, 0.0], [0.0, 10.0, 0.0], [5.0, 10.0, 0.0], [5.0, 0.0, 0.0]])
+        s1.to_numpy(), np.array([[5.0, 10.0, 0.0], [5.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 10.0, 0.0]])
     )
 
     assert s2.name == "Surface-2"
     assert np.array_equal(
-        s2.to_numpy(), np.array([[5.0, 0.0, 0.0], [5.0, 10.0, 0.0], [10.0, 10.0, 0.0], [10.0, 0.0, 0.0]])
+        s2.to_numpy(), np.array([[10.0, 10.0, 0.0], [10.0, 0.0, 0.0], [5.0, 0.0, 0.0], [5.0, 10.0, 0.0]])
     )
 
     with pytest.raises(ValueError):
@@ -159,12 +160,12 @@ def test_Surface_split():
     s1, s2 = surface.split_into_n_segments(n_segments=2, axis='y', plot=False)
     assert s1.name is None
     assert np.array_equal(
-        s1.to_numpy(), np.array([[0.0, 0.0, 0.0], [0.0, 5.0, 0.0], [10.0, 5.0, 0.0], [10.0, 0.0, 0.0]])
+        s1.to_numpy(), np.array([[10.0, 5.0, 0.0], [10.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 5.0, 0.0]])
     )
 
     assert s2.name is None
     assert np.array_equal(
-        s2.to_numpy(), np.array([[0.0, 5.0, 0.0], [0.0, 10.0, 0.0], [10.0, 10.0, 0.0], [10.0, 5.0, 0.0]])
+        s2.to_numpy(), np.array([[10.0, 10.0, 0.0], [10.0, 5.0, 0.0], [0.0, 5.0, 0.0], [0.0, 10.0, 0.0]])
     )
 
     with pytest.raises(ValueError):
@@ -180,7 +181,7 @@ def test_split_plot():
 
 def test_Surface_rotate():
     """Test rotate."""
-    surface = Surface.Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=0.0, max_z=0.0)
+    surface = Surface.Floor(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, z=0.0)
 
     surface_rot = surface.rotate(degrees=-25.0)
     assert np.isclose(surface.os_area(), surface_rot.os_area())
@@ -191,10 +192,10 @@ def test_Surface_rotate():
         surface_rot.to_numpy(),
         np.array(
             [
-                [+0.0, +0.0, +0.0],
-                [-10.0, +0.0, +0.0],
                 [-10.0, +10.0, +0.0],
                 [+0.0, +10.0, +0.0],
+                [+0.0, +0.0, +0.0],
+                [-10.0, +0.0, +0.0],
             ]
         ),
     )

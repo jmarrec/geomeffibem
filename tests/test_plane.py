@@ -11,7 +11,7 @@ from geomeffibem.vertex import Vertex
 
 def test_plane():
     """Tests we get the right plane from a Surface."""
-    floor_surface = Surface.Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=3.0, max_z=3.0)
+    floor_surface = Surface.Floor(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, z=3.0)
     p = floor_surface.get_plane()
     assert p == floor_surface.get_plane()
     assert p.is_orthogonal()

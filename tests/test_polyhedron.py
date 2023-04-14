@@ -11,7 +11,7 @@ from geomeffibem.surface import Surface
 @pytest.fixture
 def zonePoly():
     """A fixture to create a Zone Polyhedron."""
-    floor_surface = Surface.Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=0.0, max_z=0.0)
+    floor_surface = Surface.Floor(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, z=0.0)
     m = openstudio.model.Model()
     space = openstudio.model.Space.fromFloorPrint(floor_surface.to_Point3dVector(), 3.0, m).get()
     for sf in space.surfaces():
