@@ -6,7 +6,10 @@ from geomeffibem.vertex import Vertex, distance
 
 
 class Plane:
-    """A 3D Plane."""
+    """A 3D Plane.
+
+    Equation is `ax + by + cz + d = 0`
+    """
 
     def __init__(self, a, b, c, d):
         """Plane constructor."""
