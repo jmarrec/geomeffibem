@@ -77,8 +77,10 @@ class Transformation:
             yp = zAxis - (zp * zp.dot(zAxis))
             yp = yp.normalize()
             xp = yp.cross(zp)
+            print("Not facing up or down, set yPrime along zAxis")
         else:
             # facing up or down, set xPrime along -xAxis
+            print("Facing up or down, set xPrime along -xAxis")
             xp = negXAxis - (zp * zp.dot(negXAxis))
             xp = xp.normalize()
             yp = zp.cross(xp)

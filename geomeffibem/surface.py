@@ -111,16 +111,71 @@ class Surface:
         )
 
     @staticmethod
-    def Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=0.0, max_z=0.0) -> Surface:
-        """Factory method to easily create an rectangle Surface."""
+    def Floor(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, z=0.0) -> Surface:
+        """Create a rectangular floor Surface (outward normal pointing down)."""
+        # Counterclockwise, ULC convention, except here we want to create a floor so
+        # outward normal must be pointing DOWN, so clockwise order
         vertices_arr = np.array(
             [
-                [min_x, min_y, max_z],
-                [min_x, max_y, min_z],
-                [max_x, max_y, min_z],
-                [max_x, min_y, max_z],
+                [max_x, max_y, z],
+                [max_x, min_y, z],
+                [min_x, min_y, z],
+                [min_x, max_y, z],
             ]
         )
+        vertices = [Vertex.from_numpy(x) for x in vertices_arr]
+
+        return Surface(vertices=vertices)
+
+    @staticmethod
+    def Rectangle(min_x=0.0, max_x=10.0, min_y=0.0, max_y=10.0, min_z=0.0, max_z=0.0) -> Surface:
+        """Factory method to easily create a rectangular Surface, with ULC convention."""
+        if (abs(max_z - min_z) < 0.01):
+            z = min_z
+            if (abs(z) < 0.01):
+                print("Looks like you're trying to create a Floor surface... use the Surface.Floor factory method")
+                return Surface.Floor(min_x=min_x, max_x=max_x, min_y=min_y, max_y=max_y, z=z)
+
+            vertices_arr = np.array(
+                [
+                    [min_x, max_y, z],  # Upper Left Corner
+                    [min_x, min_y, z],  # Lower Left Corner
+                    [max_x, min_y, z],  # Lower Right Corner
+                    [max_x, max_y, z],  # Upper Right Corner
+                ]
+            )
+        elif (abs(max_x - min_x) < 0.01):
+            x = min_x
+            vertices_arr = np.array(
+                [
+                    [x, min_y, max_z],  # Upper Left Corner
+                    [x, min_y, min_z],  # Lower Left Corner
+                    [x, max_y, min_z],  # Lower Right Corner
+                    [x, max_y, max_z],  # Upper Right Corner
+                ]
+            )
+
+        elif (abs(max_y - max_y) < 0.01):
+            y = min_y
+            vertices_arr = np.array(
+                [
+                    [min_x, y, max_z],  # Upper Left Corner
+                    [min_x, y, min_z],  # Lower Left Corner
+                    [max_x, y, min_z],  # Lower Right Corne
+                    [max_x, y, max_z],  # Upper Right Corner
+                ]
+            )
+        else:
+            print("We expected at least one of x, y, z to be fixed, results are not guaranteed to work")
+            vertices_arr = np.array(
+                [
+                    [min_x, min_y, max_z],
+                    [min_x, max_y, min_z],
+                    [max_x, max_y, min_z],
+                    [max_x, min_y, max_z],
+                ]
+            )
+
         vertices = [Vertex.from_numpy(x) for x in vertices_arr]
 
         return Surface(vertices=vertices)
@@ -173,7 +228,7 @@ class Surface:
             raise ValueError("Normal Unit Vector doesn't appear to be a unit vector")
         self.vertices[0]
 
-        # d = -thisNormal.x() * point.x() - thisNormal.y() * point.y() - thisNormal.z() * point.z();
+        # d = -normalVector.x() * point.x() - normalVector.y() * point.y() - normalVector.z() * point.z();
         d = (-normalVector).dot(self.vertices[0])
 
         p = Plane(normalVector.x, normalVector.y, normalVector.z, d)

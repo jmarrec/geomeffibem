@@ -11,7 +11,7 @@ from typing import List, Tuple
 import numpy as np
 
 from geomeffibem.surface import Surface, Surface3dEge
-from geomeffibem.vertex import Vertex
+from geomeffibem.vertex import Vertex, getNewellVector
 
 
 class Polyhedron:
@@ -115,6 +115,19 @@ class Polyhedron:
             return True, []
 
         return False, edgesInBoth(edgeNot2orig, edgeNot2again)
+
+    def calcPolyhedronVolume(self) -> float:
+        """Calculates the Volume of an ENCLOSED Polyhedron."""
+        volume = 0.0
+        for surface in self.surfaces:
+            vertices = surface.vertices
+            p3FaceOrigin = vertices[1] - Vertex(0, 0, 0)
+            newellAreaVector = getNewellVector(vertices)
+            pyramidVolume = newellAreaVector.dot(p3FaceOrigin)
+            volume += pyramidVolume
+        # Our newellArea vector has twice the length
+        volume /= 6.0
+        return volume
 
     def to_os_cpp_code(self):
         """For my own convenience when writting OpenStudio tests."""
