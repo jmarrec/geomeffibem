@@ -556,6 +556,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#geomeffibem.surface.Surface.Floor" class="md-nav__link">
+    Floor()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#geomeffibem.surface.Surface.Rectangle" class="md-nav__link">
     Rectangle()
   </a>
@@ -924,6 +931,13 @@
           <li class="md-nav__item">
   <a href="#geomeffibem.polyhedron.Polyhedron.__init__" class="md-nav__link">
     __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geomeffibem.polyhedron.Polyhedron.calcPolyhedronVolume" class="md-nav__link">
+    calcPolyhedronVolume()
   </a>
   
 </li>
@@ -1330,6 +1344,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#geomeffibem.surface.Surface.Floor" class="md-nav__link">
+    Floor()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#geomeffibem.surface.Surface.Rectangle" class="md-nav__link">
     Rectangle()
   </a>
@@ -1698,6 +1719,13 @@
           <li class="md-nav__item">
   <a href="#geomeffibem.polyhedron.Polyhedron.__init__" class="md-nav__link">
     __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geomeffibem.polyhedron.Polyhedron.calcPolyhedronVolume" class="md-nav__link">
+    calcPolyhedronVolume()
   </a>
   
 </li>
@@ -3437,7 +3465,64 @@ A Surface3dEdge is a side of a Surface.</p>
 <span class="normal">349</span>
 <span class="normal">350</span>
 <span class="normal">351</span>
-<span class="normal">352</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Surface</span><span class="p">:</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span>
+<span class="normal">402</span>
+<span class="normal">403</span>
+<span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Surface</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A 3D Surface.&quot;&quot;&quot;</span>
 
     <span class="nd">@staticmethod</span>
@@ -3467,16 +3552,73 @@ A Surface3dEdge is a side of a Surface.</p>
         <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">Rectangle</span><span class="p">(</span><span class="n">min_x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_x</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">min_y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_y</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">min_z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Surface</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Factory method to easily create an rectangle Surface.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">Floor</span><span class="p">(</span><span class="n">min_x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_x</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">min_y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_y</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Surface</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a rectangular floor Surface (outward normal pointing down).&quot;&quot;&quot;</span>
+        <span class="c1"># Counterclockwise, ULC convention, except here we want to create a floor so</span>
+        <span class="c1"># outward normal must be pointing DOWN, so clockwise order</span>
         <span class="n">vertices_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span>
-                <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>
-                <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>
-                <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>
-                <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>
             <span class="p">]</span>
         <span class="p">)</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span><span class="n">Vertex</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">vertices_arr</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">Surface</span><span class="p">(</span><span class="n">vertices</span><span class="o">=</span><span class="n">vertices</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">Rectangle</span><span class="p">(</span><span class="n">min_x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_x</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">min_y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_y</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">min_z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Surface</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Factory method to easily create a rectangular Surface, with ULC convention.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">max_z</span> <span class="o">-</span> <span class="n">min_z</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">min_z</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;Looks like you&#39;re trying to create a Floor surface... &quot;</span>
+                    <span class="s2">&quot;use the Surface.Floor factory method if that&#39;s the case so outwardNormal points down.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">vertices_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>  <span class="c1"># Upper Left Corner</span>
+                    <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>  <span class="c1"># Lower Left Corner</span>
+                    <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>  <span class="c1"># Lower Right Corner</span>
+                    <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>  <span class="c1"># Upper Right Corner</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">max_x</span> <span class="o">-</span> <span class="n">min_x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">min_x</span>
+            <span class="n">vertices_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>  <span class="c1"># Upper Left Corner</span>
+                    <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>  <span class="c1"># Lower Left Corner</span>
+                    <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>  <span class="c1"># Lower Right Corner</span>
+                    <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>  <span class="c1"># Upper Right Corner</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">max_y</span> <span class="o">-</span> <span class="n">max_y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">min_y</span>
+            <span class="n">vertices_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>  <span class="c1"># Upper Left Corner</span>
+                    <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>  <span class="c1"># Lower Left Corner</span>
+                    <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>  <span class="c1"># Lower Right Corne</span>
+                    <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>  <span class="c1"># Upper Right Corner</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;We expected at least one of x, y, z to be fixed, results are not guaranteed to work&quot;</span><span class="p">)</span>
+            <span class="n">vertices_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+
         <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span><span class="n">Vertex</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">vertices_arr</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">Surface</span><span class="p">(</span><span class="n">vertices</span><span class="o">=</span><span class="n">vertices</span><span class="p">)</span>
@@ -3529,7 +3671,7 @@ A Surface3dEdge is a side of a Surface.</p>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Normal Unit Vector doesn&#39;t appear to be a unit vector&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="c1"># d = -thisNormal.x() * point.x() - thisNormal.y() * point.y() - thisNormal.z() * point.z();</span>
+        <span class="c1"># d = -normalVector.x() * point.x() - normalVector.y() * point.y() - normalVector.z() * point.z();</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">normalVector</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="n">p</span> <span class="o">=</span> <span class="n">Plane</span><span class="p">(</span><span class="n">normalVector</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">normalVector</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">normalVector</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
@@ -3725,19 +3867,19 @@ A Surface3dEdge is a side of a Surface.</p>
 
 
 
-<h3 id="geomeffibem.surface.Surface.Rectangle" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">Rectangle</span><span class="p">(</span><span class="n">min_x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_x</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">min_y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_y</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">min_z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span></code>
+<h3 id="geomeffibem.surface.Surface.Floor" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">Floor</span><span class="p">(</span><span class="n">min_x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_x</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">min_y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_y</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
   </span>
 
-<a href="#geomeffibem.surface.Surface.Rectangle" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#geomeffibem.surface.Surface.Floor" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
   
-      <p>Factory method to easily create an rectangle Surface.</p>
+      <p>Create a rectangular floor Surface (outward normal pointing down).</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
@@ -3754,17 +3896,154 @@ A Surface3dEdge is a side of a Surface.</p>
 <span class="normal">123</span>
 <span class="normal">124</span>
 <span class="normal">125</span>
-<span class="normal">126</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
-<span class="k">def</span> <span class="nf">Rectangle</span><span class="p">(</span><span class="n">min_x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_x</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">min_y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_y</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">min_z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Surface</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory method to easily create an rectangle Surface.&quot;&quot;&quot;</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">Floor</span><span class="p">(</span><span class="n">min_x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_x</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">min_y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_y</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Surface</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a rectangular floor Surface (outward normal pointing down).&quot;&quot;&quot;</span>
+    <span class="c1"># Counterclockwise, ULC convention, except here we want to create a floor so</span>
+    <span class="c1"># outward normal must be pointing DOWN, so clockwise order</span>
     <span class="n">vertices_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
         <span class="p">[</span>
-            <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>
-            <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>
-            <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>
-            <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>
         <span class="p">]</span>
     <span class="p">)</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span><span class="n">Vertex</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">vertices_arr</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">Surface</span><span class="p">(</span><span class="n">vertices</span><span class="o">=</span><span class="n">vertices</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="geomeffibem.surface.Surface.Rectangle" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">Rectangle</span><span class="p">(</span><span class="n">min_x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_x</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">min_y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_y</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">min_z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+<a href="#geomeffibem.surface.Surface.Rectangle" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Factory method to easily create a rectangular Surface, with ULC convention.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>geomeffibem/surface.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">Rectangle</span><span class="p">(</span><span class="n">min_x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_x</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">min_y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_y</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">min_z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Surface</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory method to easily create a rectangular Surface, with ULC convention.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">max_z</span> <span class="o">-</span> <span class="n">min_z</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">min_z</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Looks like you&#39;re trying to create a Floor surface... &quot;</span>
+                <span class="s2">&quot;use the Surface.Floor factory method if that&#39;s the case so outwardNormal points down.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">vertices_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>  <span class="c1"># Upper Left Corner</span>
+                <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>  <span class="c1"># Lower Left Corner</span>
+                <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>  <span class="c1"># Lower Right Corner</span>
+                <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span>  <span class="c1"># Upper Right Corner</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">max_x</span> <span class="o">-</span> <span class="n">min_x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">min_x</span>
+        <span class="n">vertices_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>  <span class="c1"># Upper Left Corner</span>
+                <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>  <span class="c1"># Lower Left Corner</span>
+                <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>  <span class="c1"># Lower Right Corner</span>
+                <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>  <span class="c1"># Upper Right Corner</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">max_y</span> <span class="o">-</span> <span class="n">max_y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">min_y</span>
+        <span class="n">vertices_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>  <span class="c1"># Upper Left Corner</span>
+                <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>  <span class="c1"># Lower Left Corner</span>
+                <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>  <span class="c1"># Lower Right Corne</span>
+                <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>  <span class="c1"># Upper Right Corner</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;We expected at least one of x, y, z to be fixed, results are not guaranteed to work&quot;</span><span class="p">)</span>
+        <span class="n">vertices_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">,</span> <span class="n">min_z</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_z</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
     <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span><span class="n">Vertex</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">vertices_arr</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">Surface</span><span class="p">(</span><span class="n">vertices</span><span class="o">=</span><span class="n">vertices</span><span class="p">)</span>
@@ -3790,21 +4069,21 @@ A Surface3dEdge is a side of a Surface.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span>
-<span class="normal">133</span>
-<span class="normal">134</span>
-<span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span>
-<span class="normal">139</span>
-<span class="normal">140</span>
-<span class="normal">141</span>
-<span class="normal">142</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Surface constructor.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expected a list or numpy array of Vertex&quot;</span><span class="p">)</span>
@@ -3841,23 +4120,23 @@ A Surface3dEdge is a side of a Surface.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">336</span>
-<span class="normal">337</span>
-<span class="normal">338</span>
-<span class="normal">339</span>
-<span class="normal">340</span>
-<span class="normal">341</span>
-<span class="normal">342</span>
-<span class="normal">343</span>
-<span class="normal">344</span>
-<span class="normal">345</span>
-<span class="normal">346</span>
-<span class="normal">347</span>
-<span class="normal">348</span>
-<span class="normal">349</span>
-<span class="normal">350</span>
-<span class="normal">351</span>
-<span class="normal">352</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span>
+<span class="normal">402</span>
+<span class="normal">403</span>
+<span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Repr.&quot;&quot;&quot;</span>
     <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -3896,10 +4175,10 @@ A Surface3dEdge is a side of a Surface.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">185</span>
-<span class="normal">186</span>
-<span class="normal">187</span>
-<span class="normal">188</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute area of the surface.&quot;&quot;&quot;</span>
     <span class="n">newellVector</span> <span class="o">=</span> <span class="n">getNewellVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">newellVector</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">/</span> <span class="mf">2.0</span>
@@ -3926,17 +4205,17 @@ A Surface3dEdge is a side of a Surface.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span>
-<span class="normal">203</span>
-<span class="normal">204</span>
-<span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">azimuth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">azimuth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the azimuth of the surface, in radians.</span>
 
 <span class="sd">    That is the angle between the outwardNormal and the North axis (Y-axis).</span>
@@ -4090,13 +4369,13 @@ A Surface3dEdge is a side of a Surface.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span>
-<span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_plane</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Plane</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_plane</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Plane</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the Plane of the Surface.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">os_plane</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">os_plane</span>
@@ -4126,22 +4405,22 @@ A Surface3dEdge is a side of a Surface.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_plot_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_plot_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a string representation of the plane it is on.</span>
 
 <span class="sd">    TODO: raises if not exactly on &#39;xy&#39;, &#39;xz&#39; or &#39;yz&#39;</span>
@@ -4179,9 +4458,9 @@ A Surface3dEdge is a side of a Surface.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">os_area</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vertex</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">os_area</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vertex</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns area of the surface via openstudio.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">openstudio</span><span class="o">.</span><span class="n">getArea</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_Point3dVector</span><span class="p">())</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
@@ -4206,12 +4485,12 @@ A Surface3dEdge is a side of a Surface.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">os_centroid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vertex</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">os_centroid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vertex</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the centroid via openstudio.&quot;&quot;&quot;</span>
     <span class="n">centroid_</span> <span class="o">=</span> <span class="n">openstudio</span><span class="o">.</span><span class="n">getCentroid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_Point3dVector</span><span class="p">())</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">centroid_</span><span class="o">.</span><span class="n">is_initialized</span><span class="p">():</span>
@@ -4239,9 +4518,9 @@ A Surface3dEdge is a side of a Surface.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">outwardNormal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vertex</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">outwardNormal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vertex</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the outward normal (normal unit vector).&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">getOutwardNormal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -4266,9 +4545,9 @@ A Surface3dEdge is a side of a Surface.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">perimeter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">perimeter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the perimeter of the surface.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">edge</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_Surface3dEdges</span><span class="p">()])</span>
 </code></pre></div></td></tr></table></div>
@@ -4293,28 +4572,28 @@ A Surface3dEdge is a side of a Surface.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span>
-<span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">plane</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Plane</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">plane</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Plane</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the plane from outwardNormal and the first point, not using OpenStudio.&quot;&quot;&quot;</span>
     <span class="n">normalVector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outwardNormal</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">normalVector</span><span class="o">.</span><span class="n">length</span><span class="p">(),</span> <span class="mf">1.0</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Normal Unit Vector doesn&#39;t appear to be a unit vector&quot;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="c1"># d = -thisNormal.x() * point.x() - thisNormal.y() * point.y() - thisNormal.z() * point.z();</span>
+    <span class="c1"># d = -normalVector.x() * point.x() - normalVector.y() * point.y() - normalVector.z() * point.z();</span>
     <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">normalVector</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="n">p</span> <span class="o">=</span> <span class="n">Plane</span><span class="p">(</span><span class="n">normalVector</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">normalVector</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">normalVector</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
@@ -4344,13 +4623,13 @@ A Surface3dEdge is a side of a Surface.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">328</span>
-<span class="normal">329</span>
-<span class="normal">330</span>
-<span class="normal">331</span>
-<span class="normal">332</span>
-<span class="normal">333</span>
-<span class="normal">334</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calls plot_vertices, cf help(plot_vertices).&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
@@ -4386,25 +4665,25 @@ A Surface3dEdge is a side of a Surface.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">302</span>
-<span class="normal">303</span>
-<span class="normal">304</span>
-<span class="normal">305</span>
-<span class="normal">306</span>
-<span class="normal">307</span>
-<span class="normal">308</span>
-<span class="normal">309</span>
-<span class="normal">310</span>
-<span class="normal">311</span>
-<span class="normal">312</span>
-<span class="normal">313</span>
-<span class="normal">314</span>
-<span class="normal">315</span>
-<span class="normal">316</span>
-<span class="normal">317</span>
-<span class="normal">318</span>
-<span class="normal">319</span>
-<span class="normal">320</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Surface</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Surface</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Rotates a surface by an amount of degrees.</span>
 
 <span class="sd">    Args:</span>
@@ -4445,9 +4724,9 @@ A Surface3dEdge is a side of a Surface.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rough_centroid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vertex</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rough_centroid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vertex</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the centroid calculated in a rough way: the mean of the coordinates.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">Vertex</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">])</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 </code></pre></div></td></tr></table></div>
@@ -4474,54 +4753,54 @@ eg: for a plane 'xy' it splits on 'x'</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">253</span>
-<span class="normal">254</span>
-<span class="normal">255</span>
-<span class="normal">256</span>
-<span class="normal">257</span>
-<span class="normal">258</span>
-<span class="normal">259</span>
-<span class="normal">260</span>
-<span class="normal">261</span>
-<span class="normal">262</span>
-<span class="normal">263</span>
-<span class="normal">264</span>
-<span class="normal">265</span>
-<span class="normal">266</span>
-<span class="normal">267</span>
-<span class="normal">268</span>
-<span class="normal">269</span>
-<span class="normal">270</span>
-<span class="normal">271</span>
-<span class="normal">272</span>
-<span class="normal">273</span>
-<span class="normal">274</span>
-<span class="normal">275</span>
-<span class="normal">276</span>
-<span class="normal">277</span>
-<span class="normal">278</span>
-<span class="normal">279</span>
-<span class="normal">280</span>
-<span class="normal">281</span>
-<span class="normal">282</span>
-<span class="normal">283</span>
-<span class="normal">284</span>
-<span class="normal">285</span>
-<span class="normal">286</span>
-<span class="normal">287</span>
-<span class="normal">288</span>
-<span class="normal">289</span>
-<span class="normal">290</span>
-<span class="normal">291</span>
-<span class="normal">292</span>
-<span class="normal">293</span>
-<span class="normal">294</span>
-<span class="normal">295</span>
-<span class="normal">296</span>
-<span class="normal">297</span>
-<span class="normal">298</span>
-<span class="normal">299</span>
-<span class="normal">300</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">split_into_n_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_segments</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Surface</span><span class="p">]:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">split_into_n_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_segments</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Surface</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Splits a surface in N equal segments.</span>
 
 <span class="sd">    If axis is not passed, it defaults to the first one of the plane</span>
@@ -4591,10 +4870,10 @@ eg: for a plane 'xy' it splits on 'x'</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the tilt of the surface, in radians, that is the angle between the outwardNormal and the Z axis.&quot;&quot;&quot;</span>
     <span class="n">z</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">getAngle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outwardNormal</span><span class="p">(),</span> <span class="n">z</span><span class="p">)</span>
@@ -4620,9 +4899,9 @@ eg: for a plane 'xy' it splits on 'x'</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">234</span>
-<span class="normal">235</span>
-<span class="normal">236</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_OSSurface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">openstudio</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Model</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openstudio</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_OSSurface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">openstudio</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Model</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">openstudio</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an openstudio.model.Surface in the model passed as argument.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">openstudio</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_Point3dVector</span><span class="p">(),</span> <span class="n">model</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -4647,9 +4926,9 @@ eg: for a plane 'xy' it splits on 'x'</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_Point3dVector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">openstudio</span><span class="o">.</span><span class="n">Point3d</span><span class="p">]:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_Point3dVector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">openstudio</span><span class="o">.</span><span class="n">Point3d</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts vertices to a list openstudio.Point3d.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">to_Point3d</span><span class="p">()</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -4674,16 +4953,16 @@ eg: for a plane 'xy' it splits on 'x'</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">242</span>
-<span class="normal">243</span>
-<span class="normal">244</span>
-<span class="normal">245</span>
-<span class="normal">246</span>
-<span class="normal">247</span>
-<span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_Surface3dEdges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Surface3dEge</span><span class="p">]:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_Surface3dEdges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Surface3dEge</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts vertex pairs to Surface3dEge.&quot;&quot;&quot;</span>
     <span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">curVertex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">):</span>
@@ -4715,9 +4994,9 @@ eg: for a plane 'xy' it splits on 'x'</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">238</span>
-<span class="normal">239</span>
-<span class="normal">240</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a numpy array representing the vertices.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">])</span>
 </code></pre></div></td></tr></table></div>
@@ -4742,11 +5021,11 @@ eg: for a plane 'xy' it splits on 'x'</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">322</span>
-<span class="normal">323</span>
-<span class="normal">324</span>
-<span class="normal">325</span>
-<span class="normal">326</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">translation</span><span class="p">:</span> <span class="n">Vertex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Surface</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">translation</span><span class="p">:</span> <span class="n">Vertex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Surface</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Translates a surface along a translation vector.&quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">geomeffibem.transformation</span> <span class="kn">import</span> <span class="n">Transformation</span>
 
@@ -5189,24 +5468,24 @@ isPointOnLineBetweenPoints(start, end, testVertex) is true.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">355</span>
-<span class="normal">356</span>
-<span class="normal">357</span>
-<span class="normal">358</span>
-<span class="normal">359</span>
-<span class="normal">360</span>
-<span class="normal">361</span>
-<span class="normal">362</span>
-<span class="normal">363</span>
-<span class="normal">364</span>
-<span class="normal">365</span>
-<span class="normal">366</span>
-<span class="normal">367</span>
-<span class="normal">368</span>
-<span class="normal">369</span>
-<span class="normal">370</span>
-<span class="normal">371</span>
-<span class="normal">372</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_surface_from_surface_like</span><span class="p">(</span><span class="n">surface_like</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Surface</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Vertex</span><span class="p">],</span> <span class="n">openstudio</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Surface</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Surface</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">412</span>
+<span class="normal">413</span>
+<span class="normal">414</span>
+<span class="normal">415</span>
+<span class="normal">416</span>
+<span class="normal">417</span>
+<span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_surface_from_surface_like</span><span class="p">(</span><span class="n">surface_like</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Surface</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Vertex</span><span class="p">],</span> <span class="n">openstudio</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Surface</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Surface</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper to get a Surface (class) from a surface like object.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">surface_like</span><span class="p">,</span> <span class="n">openstudio</span><span class="o">.</span><span class="n">openstudiomodelgeometry</span><span class="o">.</span><span class="n">Surface</span><span class="p">):</span>
         <span class="n">surface</span> <span class="o">=</span> <span class="n">Surface</span><span class="o">.</span><span class="n">from_Surface</span><span class="p">(</span><span class="n">surface_like</span><span class="p">)</span>
@@ -5248,64 +5527,7 @@ isPointOnLineBetweenPoints(start, end, testVertex) is true.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/surface.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">375</span>
-<span class="normal">376</span>
-<span class="normal">377</span>
-<span class="normal">378</span>
-<span class="normal">379</span>
-<span class="normal">380</span>
-<span class="normal">381</span>
-<span class="normal">382</span>
-<span class="normal">383</span>
-<span class="normal">384</span>
-<span class="normal">385</span>
-<span class="normal">386</span>
-<span class="normal">387</span>
-<span class="normal">388</span>
-<span class="normal">389</span>
-<span class="normal">390</span>
-<span class="normal">391</span>
-<span class="normal">392</span>
-<span class="normal">393</span>
-<span class="normal">394</span>
-<span class="normal">395</span>
-<span class="normal">396</span>
-<span class="normal">397</span>
-<span class="normal">398</span>
-<span class="normal">399</span>
-<span class="normal">400</span>
-<span class="normal">401</span>
-<span class="normal">402</span>
-<span class="normal">403</span>
-<span class="normal">404</span>
-<span class="normal">405</span>
-<span class="normal">406</span>
-<span class="normal">407</span>
-<span class="normal">408</span>
-<span class="normal">409</span>
-<span class="normal">410</span>
-<span class="normal">411</span>
-<span class="normal">412</span>
-<span class="normal">413</span>
-<span class="normal">414</span>
-<span class="normal">415</span>
-<span class="normal">416</span>
-<span class="normal">417</span>
-<span class="normal">418</span>
-<span class="normal">419</span>
-<span class="normal">420</span>
-<span class="normal">421</span>
-<span class="normal">422</span>
-<span class="normal">423</span>
-<span class="normal">424</span>
-<span class="normal">425</span>
-<span class="normal">426</span>
-<span class="normal">427</span>
-<span class="normal">428</span>
-<span class="normal">429</span>
-<span class="normal">430</span>
-<span class="normal">431</span>
-<span class="normal">432</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">432</span>
 <span class="normal">433</span>
 <span class="normal">434</span>
 <span class="normal">435</span>
@@ -5330,7 +5552,64 @@ isPointOnLineBetweenPoints(start, end, testVertex) is true.</p>
 <span class="normal">454</span>
 <span class="normal">455</span>
 <span class="normal">456</span>
-<span class="normal">457</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">plot_vertices</span><span class="p">(</span>
+<span class="normal">457</span>
+<span class="normal">458</span>
+<span class="normal">459</span>
+<span class="normal">460</span>
+<span class="normal">461</span>
+<span class="normal">462</span>
+<span class="normal">463</span>
+<span class="normal">464</span>
+<span class="normal">465</span>
+<span class="normal">466</span>
+<span class="normal">467</span>
+<span class="normal">468</span>
+<span class="normal">469</span>
+<span class="normal">470</span>
+<span class="normal">471</span>
+<span class="normal">472</span>
+<span class="normal">473</span>
+<span class="normal">474</span>
+<span class="normal">475</span>
+<span class="normal">476</span>
+<span class="normal">477</span>
+<span class="normal">478</span>
+<span class="normal">479</span>
+<span class="normal">480</span>
+<span class="normal">481</span>
+<span class="normal">482</span>
+<span class="normal">483</span>
+<span class="normal">484</span>
+<span class="normal">485</span>
+<span class="normal">486</span>
+<span class="normal">487</span>
+<span class="normal">488</span>
+<span class="normal">489</span>
+<span class="normal">490</span>
+<span class="normal">491</span>
+<span class="normal">492</span>
+<span class="normal">493</span>
+<span class="normal">494</span>
+<span class="normal">495</span>
+<span class="normal">496</span>
+<span class="normal">497</span>
+<span class="normal">498</span>
+<span class="normal">499</span>
+<span class="normal">500</span>
+<span class="normal">501</span>
+<span class="normal">502</span>
+<span class="normal">503</span>
+<span class="normal">504</span>
+<span class="normal">505</span>
+<span class="normal">506</span>
+<span class="normal">507</span>
+<span class="normal">508</span>
+<span class="normal">509</span>
+<span class="normal">510</span>
+<span class="normal">511</span>
+<span class="normal">512</span>
+<span class="normal">513</span>
+<span class="normal">514</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">plot_vertices</span><span class="p">(</span>
     <span class="n">surface_like</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Surface</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Vertex</span><span class="p">],</span> <span class="n">openstudio</span><span class="o">.</span><span class="n">openstudiomodelgeometry</span><span class="o">.</span><span class="n">Surface</span><span class="p">],</span>
     <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">center_axes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -5462,6 +5741,7 @@ isPointOnLineBetweenPoints(start, end, testVertex) is true.</p>
 
   
       <p>A 3D Plane.</p>
+<p>Equation is <code>ax + by + cz + d = 0</code></p>
 
 
         <details class="quote">
@@ -5512,8 +5792,14 @@ isPointOnLineBetweenPoints(start, end, testVertex) is true.</p>
 <span class="normal">51</span>
 <span class="normal">52</span>
 <span class="normal">53</span>
-<span class="normal">54</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Plane</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A 3D Plane.&quot;&quot;&quot;</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Plane</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A 3D Plane.</span>
+
+<span class="sd">    Equation is `ax + by + cz + d = 0`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Plane constructor.&quot;&quot;&quot;</span>
@@ -5590,12 +5876,12 @@ isPointOnLineBetweenPoints(start, end, testVertex) is true.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/plane.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14</span>
 <span class="normal">15</span>
-<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plane constructor.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
@@ -5623,9 +5909,9 @@ isPointOnLineBetweenPoints(start, end, testVertex) is true.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/plane.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Repr.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Plane (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="si">}</span><span class="s2">)&quot;</span>
 </code></pre></div></td></tr></table></div>
@@ -5650,9 +5936,9 @@ isPointOnLineBetweenPoints(start, end, testVertex) is true.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/plane.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">is_orthogonal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">is_orthogonal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if the plane is orthogonal.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outwardNormal</span><span class="p">()))</span> <span class="o">==</span> <span class="mf">1.0</span>
 </code></pre></div></td></tr></table></div>
@@ -5677,9 +5963,9 @@ isPointOnLineBetweenPoints(start, end, testVertex) is true.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/plane.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">outwardNormal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">outwardNormal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The outwardNormal of the plane.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">])</span>
 </code></pre></div></td></tr></table></div>
@@ -5704,12 +5990,12 @@ isPointOnLineBetweenPoints(start, end, testVertex) is true.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/plane.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">29</span>
 <span class="normal">30</span>
-<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">pointOnPlane</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">Vertex</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">pointOnPlane</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">Vertex</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks whether the Vertex is on the Plane.&quot;&quot;&quot;</span>
     <span class="c1"># project point to plane</span>
     <span class="n">projected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
@@ -5737,10 +6023,7 @@ isPointOnLineBetweenPoints(start, end, testVertex) is true.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/plane.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">36</span>
 <span class="normal">37</span>
 <span class="normal">38</span>
 <span class="normal">39</span>
@@ -5754,7 +6037,10 @@ isPointOnLineBetweenPoints(start, end, testVertex) is true.</p>
 <span class="normal">47</span>
 <span class="normal">48</span>
 <span class="normal">49</span>
-<span class="normal">50</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">Vertex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vertex</span><span class="p">:</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">Vertex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vertex</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Project a point onto a Plane.&quot;&quot;&quot;</span>
     <span class="c1"># http://www.9math.com/book/projection-point-plane</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">Vertex</span><span class="p">):</span>
@@ -6006,7 +6292,20 @@ You can check whether it's enclosed or not.</p>
 <span class="normal">184</span>
 <span class="normal">185</span>
 <span class="normal">186</span>
-<span class="normal">187</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Polyhedron</span><span class="p">:</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Polyhedron</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A collection of Surfaces, meant to represent a Volume.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surfaces</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Surface</span><span class="p">]):</span>
@@ -6107,6 +6406,19 @@ You can check whether it's enclosed or not.</p>
             <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[]</span>
 
         <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">edgesInBoth</span><span class="p">(</span><span class="n">edgeNot2orig</span><span class="p">,</span> <span class="n">edgeNot2again</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">calcPolyhedronVolume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the Volume of an ENCLOSED Polyhedron.&quot;&quot;&quot;</span>
+        <span class="n">volume</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">surface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">surfaces</span><span class="p">:</span>
+            <span class="n">vertices</span> <span class="o">=</span> <span class="n">surface</span><span class="o">.</span><span class="n">vertices</span>
+            <span class="n">p3FaceOrigin</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">Vertex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">newellAreaVector</span> <span class="o">=</span> <span class="n">getNewellVector</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+            <span class="n">pyramidVolume</span> <span class="o">=</span> <span class="n">newellAreaVector</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p3FaceOrigin</span><span class="p">)</span>
+            <span class="n">volume</span> <span class="o">+=</span> <span class="n">pyramidVolume</span>
+        <span class="c1"># Our newellArea vector has twice the length</span>
+        <span class="n">volume</span> <span class="o">/=</span> <span class="mf">6.0</span>
+        <span class="k">return</span> <span class="n">volume</span>
 
     <span class="k">def</span> <span class="nf">to_os_cpp_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;For my own convenience when writting OpenStudio tests.&quot;&quot;&quot;</span>
@@ -6225,6 +6537,51 @@ You can check whether it's enclosed or not.</p>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="n">Surface</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Element </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> is not a Surface object&quot;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">surfaces</span> <span class="o">=</span> <span class="n">surfaces</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="geomeffibem.polyhedron.Polyhedron.calcPolyhedronVolume" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">calcPolyhedronVolume</span><span class="p">()</span></code>
+
+<a href="#geomeffibem.polyhedron.Polyhedron.calcPolyhedronVolume" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Calculates the Volume of an ENCLOSED Polyhedron.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>geomeffibem/polyhedron.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">calcPolyhedronVolume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates the Volume of an ENCLOSED Polyhedron.&quot;&quot;&quot;</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">surface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">surfaces</span><span class="p">:</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">surface</span><span class="o">.</span><span class="n">vertices</span>
+        <span class="n">p3FaceOrigin</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">Vertex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">newellAreaVector</span> <span class="o">=</span> <span class="n">getNewellVector</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+        <span class="n">pyramidVolume</span> <span class="o">=</span> <span class="n">newellAreaVector</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p3FaceOrigin</span><span class="p">)</span>
+        <span class="n">volume</span> <span class="o">+=</span> <span class="n">pyramidVolume</span>
+    <span class="c1"># Our newellArea vector has twice the length</span>
+    <span class="n">volume</span> <span class="o">/=</span> <span class="mf">6.0</span>
+    <span class="k">return</span> <span class="n">volume</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -6428,20 +6785,7 @@ You can check whether it's enclosed or not.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/polyhedron.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">147</span>
-<span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">160</span>
 <span class="normal">161</span>
 <span class="normal">162</span>
 <span class="normal">163</span>
@@ -6468,7 +6812,20 @@ You can check whether it's enclosed or not.</p>
 <span class="normal">184</span>
 <span class="normal">185</span>
 <span class="normal">186</span>
-<span class="normal">187</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_eplus_cpp_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_eplus_cpp_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;For my own convenience when writting EnergyPlus tests.&quot;&quot;&quot;</span>
     <span class="n">n_surfaces</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">surfaces</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span>
@@ -6531,20 +6888,7 @@ You can check whether it's enclosed or not.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/polyhedron.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">132</span>
 <span class="normal">133</span>
 <span class="normal">134</span>
 <span class="normal">135</span>
@@ -6557,7 +6901,20 @@ You can check whether it's enclosed or not.</p>
 <span class="normal">142</span>
 <span class="normal">143</span>
 <span class="normal">144</span>
-<span class="normal">145</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_os_cpp_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_os_cpp_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;For my own convenience when writting OpenStudio tests.&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sf</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">surfaces</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">sf</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -6731,15 +7088,15 @@ You can check whether it's enclosed or not.</p>
 
       <details class="quote">
         <summary>Source code in <code>geomeffibem/polyhedron.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">edgesInBoth</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Surface3dEge</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Surface3dEge</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Surface3dEge</span><span class="p">]:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">edgesInBoth</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Surface3dEge</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Surface3dEge</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Surface3dEge</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function.&quot;&quot;&quot;</span>
     <span class="n">in_both</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">edge_a</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
