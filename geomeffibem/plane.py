@@ -20,7 +20,7 @@ class Plane:
 
     def outwardNormal(self) -> np.ndarray:
         """The outwardNormal of the plane."""
-        return np.array([self.a, self.b, self.c])
+        return Vertex(self.a, self.b, self.c)
 
     def is_orthogonal(self) -> bool:
         """Checks if the plane is orthogonal."""

@@ -103,7 +103,7 @@ class Surface:
     @staticmethod
     def from_Surface(openstudio_surface: openstudio.model.Surface) -> Surface:
         """Factory method to construct from an openstudio.model.Surface."""
-        if not isinstance(openstudio_surface, openstudio.openstudiomodelgeometry.Surface):
+        if not isinstance(openstudio_surface, openstudio.model.Surface):
             raise ValueError("Expected an openstudio.model.Surface")
         return Surface(
             vertices=[Vertex.from_Point3d(x) for x in openstudio_surface.vertices()],
@@ -411,7 +411,7 @@ class Surface:
 
 def get_surface_from_surface_like(surface_like: Union[Surface, List[Vertex], openstudio.model.Surface]) -> Surface:
     """Helper to get a Surface (class) from a surface like object."""
-    if isinstance(surface_like, openstudio.openstudiomodelgeometry.Surface):
+    if isinstance(surface_like, openstudio.model.Surface):
         surface = Surface.from_Surface(surface_like)
     elif isinstance(surface_like, Surface):
         surface = surface_like
@@ -430,13 +430,14 @@ def get_surface_from_surface_like(surface_like: Union[Surface, List[Vertex], ope
 
 
 def plot_vertices(
-    surface_like: Union[Surface, List[Vertex], openstudio.openstudiomodelgeometry.Surface],
+    surface_like: Union[Surface, List[Vertex], openstudio.model.Surface],
     ax=None,
     center_axes=False,
     with_rough_centroid=False,
     with_os_centroid=False,
     annotate=True,
     linewidth=None,
+    force_align=False,
     name=None,
     plane=None,
     annotate_kwargs=dict(color='r', xytext=(5, 5), textcoords='offset points'),
@@ -445,15 +446,32 @@ def plot_vertices(
 ):
     """Plot any surface-like object in 2D.
 
-    Accepts a Surface, a list or numpy array of Vertex, or an openstudio.openstudiomodelgeometry.Surface object
+    Accepts a Surface, a list or numpy array of Vertex, or an openstudio.model.Surface object
 
     TODO: Assumes the surface is planar and falls exactly on 'xy', 'xz' or 'yz' plane currently
     """
     surface = get_surface_from_surface_like(surface_like=surface_like)
 
+    is_aligned = False
+    if plane is None and not force_align:
+        try:
+            plane = surface.get_plot_axis()
+        except NotImplementedError as e:
+            print(e)
+            force_align = True
+    if plane is None and force_align:
+        print("aligning Face")
+        # Lazy load to avoid circular import
+        from geomeffibem.transformation import Transformation
+
+        faceTransformation = Transformation.alignFace(surface.vertices)
+        faceTransformationInverse = faceTransformation.inverse()
+        points = faceTransformationInverse * surface.vertices
+        surface = Surface(points, name=surface.name)
+        plane = 'xy'
+        is_aligned = True
+
     points = surface.to_numpy()
-    if plane is None:
-        plane = surface.get_plot_axis()
 
     if plane == 'xy':
         xs = points[:, 0]
@@ -476,11 +494,11 @@ def plot_vertices(
         fig, ax = plt.subplots(figsize=(w, h))
 
     ax.plot(np.append(xs, xs[0]), np.append(ys, ys[0]), marker='x', markeredgecolor='r', linewidth=linewidth, **kwargs)
-    ax.set_xlabel(plane[0])
-    ax.set_ylabel(plane[1])
+    ax.set_xlabel(plane[0] if not is_aligned else "x'")
+    ax.set_ylabel(plane[1] if not is_aligned else "y'")
     if annotate:
         for i, (x, y) in enumerate(zip(xs, ys)):
-            ax.annotate(f"{i+1} ({x}, {y})", xy=(x, y), **annotate_kwargs)
+            ax.annotate(f"{i+1} ({x:.2f}, {y:.2f})", xy=(x, y), **annotate_kwargs)
 
     if with_rough_centroid:
         centroid_x, centroid_y = surface.rough_centroid().get_coords_on_plane(plane=plane)
@@ -493,7 +511,7 @@ def plot_vertices(
             ax.plot(centroid_x, centroid_y, 'gx')
             if name:
                 ax.annotate(
-                    name,
+                    name + (" (aligned)" if is_aligned else ""),
                     xy=(centroid_x, centroid_y),
                     xytext=(0, 50),
                     textcoords='offset pixels',
@@ -501,7 +519,9 @@ def plot_vertices(
                     arrowprops=dict(edgecolor='b', lw=1, ls='-', arrowstyle='->'),
                 )
         else:
-            ax.annotate(name, xy=(centroid_x, centroid_y), ha='center', va='center')
+            ax.annotate(
+                name + (" (aligned)" if is_aligned else ""), xy=(centroid_x, centroid_y), ha='center', va='center'
+            )
 
     ax.spines['right'].set_color('none')
     ax.spines['top'].set_color('none')  # hide top axis

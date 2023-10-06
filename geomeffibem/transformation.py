@@ -156,7 +156,6 @@ class Transformation:
             name = "Rotated unnamed"
             if other.name is not None:
                 name = f"Rotated {name}"
-
             return Surface(vertices=[self * v for v in other.vertices], name=name)
         elif isinstance(other, Plane):
             # translate a point on the plane, just project (0,0,0)
