@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "geomeffibem"
-version = "0.1.5"
+version = "0.1.6"
 homepage = "https://github.com/jmarrec/geomeffibem"
 description = "A small library to facilitate some building energy modeling geometry operations with OpenStudio and EnergyPlus in mind."
 authors = ["Julien Marrec <contact@effibem.com>"]
@@ -53,7 +53,7 @@ bump2version = {version = "^1.0.1", optional = true}
 [[tool.poetry.source]]
 name = "testpypi"
 url = "https://test.pypi.org/simple/"
-secondary = true
+priority = "supplemental"
 
 [tool.poetry.extras]
 test = [
