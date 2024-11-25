@@ -15,7 +15,7 @@ def test_plane():
     p = floor_surface.get_plane()
     assert p == floor_surface.get_plane()
     assert p.is_orthogonal()
-    assert np.array_equal(p.outwardNormal(), np.array([-0.0, -0.0, -1.0]))
+    assert np.array_equal(p.outwardNormal().to_numpy(), np.array([-0.0, -0.0, -1.0]))
     assert p.a == 0.0
     assert p.b == 0.0
     assert p.c == -1.0

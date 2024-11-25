@@ -24,7 +24,7 @@ class Plane:
 
     def is_orthogonal(self) -> bool:
         """Checks if the plane is orthogonal."""
-        return sum(abs(self.outwardNormal())) == 1.0
+        return np.sum(np.abs(self.outwardNormal().to_numpy())) == 1.0
 
     def pointOnPlane(self, point: Vertex, tol=0.001) -> bool:
         """Checks whether the Vertex is on the Plane."""
