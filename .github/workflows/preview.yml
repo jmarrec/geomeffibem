@@ -18,11 +18,11 @@ jobs:
 
     strategy:
       matrix:
-        python-versions: [ 3.9 ]
+        python-versions: [ 3.12 ]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-versions }}
 
@@ -42,7 +42,7 @@ jobs:
           poetry build
 
       - name: publish to Test PyPI
-        uses: pypa/gh-action-pypi-publish@master
+        uses: pypa/gh-action-pypi-publish@v1
         with:
           user: __token__
           password: ${{ secrets.TESTPYPI_TOKEN}}
