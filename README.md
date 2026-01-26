@@ -19,4 +19,4 @@ A Jupyter Notebook [GeomEffiBEM_Demonstration.ipynb](GeomEffiBEM_Demonstration.i
 
 This is free software (MIT License) contributed by [EffiBEM](https://www.effibem.com).
 
-Leveraging software, [EffiBEM](https://www.effibem.com) specializes in providing new ways to streamline your workflows and create new tools that work with limited inputs for your specific applications. We also offer support and training services on BEM simulation engines (OpenStudio and EnergyPlus).
+Leveraging software, [EffiBEM](https://effibem.com) specializes in providing new ways to streamline your workflows and create new tools that work with limited inputs for your specific applications. We also offer support and training services on BEM simulation engines (OpenStudio and EnergyPlus).
