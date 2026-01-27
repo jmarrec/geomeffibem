@@ -2,7 +2,6 @@
 [tool.poetry]
 name = "geomeffibem"
 version = "0.1.6"
-homepage = "https://github.com/jmarrec/geomeffibem"
 description = "A small library to facilitate some building energy modeling geometry operations with OpenStudio and EnergyPlus in mind."
 authors = ["Julien Marrec <contact@effibem.com>"]
 readme = "README.md"
@@ -19,6 +18,13 @@ packages = [
     { include = "geomeffibem" },
     { include = "tests", format = "sdist" },
 ]
+
+[tool.poetry.urls]
+Homepage = "https://effibem.com"
+Documentation = "https://jmarrec.github.io/geomeffibem"
+Repository = "https://github.com/jmarrec/geomeffibem"
+Changelog = "https://github.com/jmarrec/geomeffibem/blob/main/CHANGELOG.md"
+Issues = "https://github.com/jmarrec/geomeffibem/issues"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
