@@ -12,20 +12,26 @@ nav:
   - Changelog: changelog.md
 theme:
   name: material
+  logo: assets/logo.png
+  favicon: assets/favicon-96x96.png
   language: en
   #logo: assets/logo.png
   palette:
     scheme: preference
     primary: indigo
     accent: indigo
+  font:
+    text: Roboto
   features:
     - navigation.indexes
     - navigation.instant
     - navigation.tabs.sticky
+  icon:
+    repo: fontawesome/brands/github
 markdown_extensions:
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.critic
   - pymdownx.caret
   - pymdownx.mark
@@ -52,10 +58,15 @@ plugins:
   - mkdocstrings:
       watch:
         - geomeffibem
+
+copyright: Copyright &copy; 2002 - 2026 <a href="https://effibem.com/">EffiBEM</a>
 extra:
+  generator: false
   social:
+    - icon: fontawesome/solid/link
+      link: https://effibem.com
+      name: EffiBEM
     - icon: fontawesome/brands/twitter
-      # replace with your own tweet link below
       link: https://twitter.com/MarrecJulien
       name: Tweet
     - icon: fontawesome/brands/github
@@ -63,9 +74,3 @@ extra:
       name: Github
     - icon: material/email
       link: "mailto:contact@effibem.com"
-  # to enable disqus, uncomment the following and put your disqus id below
-  # disqus: disqus_id
-# uncomment the following and put your google tracking id below to enable GA
-#google_analytics:
-  #- UA-xxx
-  #- auto
