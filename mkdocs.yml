@@ -65,7 +65,6 @@ plugins:
             show_signature: true
             show_signature_annotations: true
             separate_signature: false
-  - markdown-exec
 
 copyright: Copyright &copy; 2002 - 2026 <a href="https://effibem.com/">EffiBEM</a>
 extra:
