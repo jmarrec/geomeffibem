@@ -49,15 +49,23 @@ markdown_extensions:
   - toc:
       baselevel: 2
       permalink: true
-      slugify: !!python/name:pymdownx.slugs.uslugify
+      slugify: !!python/object/apply:pymdownx.slugs.slugify {}
   - meta
 plugins:
   - include-markdown
   - search:
       lang: en
   - mkdocstrings:
-      watch:
-        - geomeffibem
+      handlers:
+        python:
+          paths:
+            - geomeffibem
+          options:
+            show_source: true
+            show_signature: true
+            show_signature_annotations: true
+            separate_signature: false
+  - markdown-exec
 
 copyright: Copyright &copy; 2002 - 2026 <a href="https://effibem.com/">EffiBEM</a>
 extra:
@@ -66,8 +74,11 @@ extra:
     - icon: fontawesome/solid/link
       link: https://effibem.com
       name: EffiBEM
+    - icon: fontawesome/brands/bluesky
+      link: https://bsky.app/profile/julienmarrec.bsky.social
+      name: Bluesky
     - icon: fontawesome/brands/twitter
-      link: https://twitter.com/MarrecJulien
+      link: https://x.com/MarrecJulien
       name: Tweet
     - icon: fontawesome/brands/github
       link: https://github.com/jmarrec/geomeffibem

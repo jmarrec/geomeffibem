@@ -9,7 +9,7 @@
 
 A small library to facilitate some building energy modeling geometry operations with [OpenStudio](https://github.com/NREL/OpenStudio) and [EnergyPlus](https://github.com/NREL/EnergyPlus) in mind. This started as a test bed while I was implementing source code changes to both aforementioned projects and I realized this had value in creating geometry in an efficient manner as well as being able to visualize simple geometry in 2D via matplotlib.
 
-A Jupyter Notebook [GeomEffiBEM_Demonstration.ipynb](GeomEffiBEM_Demonstration.ipynb) can serve as a small demonstration of the features.
+A Jupyter Notebook [GeomEffiBEM_Demonstration.ipynb](https://github.com/jmarrec/geomeffibem/blob/main/GeomEffiBEM_Demonstration.ipynb) can serve as a small demonstration of the features.
 
 
 * Documentation: <https://jmarrec.github.io/geomeffibem>
